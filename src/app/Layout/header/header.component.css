@@ -1,0 +1,12 @@
+@media (min-width: 992px) {
+  .navbar-collapse {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+  }
+
+  .navbar-nav {
+    margin: 0 auto; /* Center in flex container */
+  }
+}

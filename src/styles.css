@@ -1,3 +1,6 @@
-@import "tailwindcss";
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+/* Optional: Custom primary color */
+:root {
+  --bs-primary: #3f51b5; /* Mat-Indigo */
+}

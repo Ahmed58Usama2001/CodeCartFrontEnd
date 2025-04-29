@@ -41,5 +41,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# SSL Certificates
-ssl/
+# SSL Certificates (e.g., mkcert-generated)
+ssl/*.key
+ssl/*.pem
+ssl/*.crt
+ssl/*.cert

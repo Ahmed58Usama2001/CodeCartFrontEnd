@@ -1,0 +1,14 @@
+<div class="shop-container flex flex-col gap-4">
+    <div class=" w-full flex justify-end px-4">
+        <button mat-stroked-button (click)="openFiltersDialog()" class="filter-btn">
+            <mat-icon>filter_list</mat-icon>
+            Filters
+        </button>
+    </div>
+
+    <div class="product-list">
+        @for (product of products; track product.id) {
+            <app-product-item [product]="product"></app-product-item>
+        }
+    </div>
+</div>

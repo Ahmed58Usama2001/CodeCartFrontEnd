@@ -1,0 +1,38 @@
+<div class="p-4">
+    <h2 class="text-xl font-bold mb-4">Filter Products</h2>
+    
+    <div class="flex flex-row gap-8">  <!-- Added flex container for horizontal layout -->
+        <div class="flex-1">
+            <h3 class="font-semibold text-lg mb-2">Brands</h3>
+            <mat-selection-list>
+                @for (brand of shopService.brands; track brand) {
+                    <mat-list-option [value]="brand" class="hover:bg-gray-100">
+                        {{ brand }}
+                    </mat-list-option>
+                }
+            </mat-selection-list>
+        </div>
+        
+        <div class="flex-1">
+            <h3 class="font-semibold text-lg mb-2">Types</h3>
+            <mat-selection-list>
+                @for (type of shopService.types; track type) {
+                    <mat-list-option [value]="type" class="hover:bg-gray-100">
+                        {{ type }}
+                    </mat-list-option>
+                }
+            </mat-selection-list>
+        </div>
+    </div>
+    
+    <mat-divider class="my-4"></mat-divider>
+    
+    <div class="flex justify-end gap-3 mt-6">
+        <button mat-stroked-button class="mr-2">
+            Cancel
+        </button>
+        <button mat-raised-button color="primary">
+            Apply Filters
+        </button>
+    </div>
+</div>

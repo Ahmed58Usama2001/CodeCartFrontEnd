@@ -1,53 +1,55 @@
-<div class="shop-container flex flex-col gap-4">
-    <div class="d-flex flex-row justify-content-between align-items-center">
-        <div>
-            <mat-paginator 
-                [length]="products?.count"
-                [pageSize]="shopParams.pageSize" 
-                [pageSizeOptions]="pageSizeOptions"
-                [pageIndex]="shopParams.pageNumber - 1"
-                showFirstLastButtons="true"
-                (page)="onPageChanged($event)"
-                aria-label="Select page">
-            </mat-paginator>
-        </div>
-
-        <div class="d-flex gap-2 align-items-center">
-            <div class="input-group w-100">
-                <input 
-                    type="text" 
-                    class="form-control" 
-                    placeholder="Search products..." 
-                    [(ngModel)]="shopParams.search"
-                    (keyup.enter)="onSearch()">
-                <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
-                    <mat-icon>search</mat-icon>
+@if (products) {
+    <div class="shop-container flex flex-col gap-4">
+        <div class="d-flex flex-row justify-content-between align-items-center">
+            <div>
+                <mat-paginator 
+                    [length]="products.count"
+                    [pageSize]="shopParams.pageSize" 
+                    [pageSizeOptions]="pageSizeOptions"
+                    [pageIndex]="shopParams.pageNumber - 1"
+                    showFirstLastButtons="true"
+                    (page)="onPageChanged($event)"
+                    aria-label="Select page">
+                </mat-paginator>
+            </div>
+    
+            <div class="d-flex gap-2 align-items-center">
+                <div class="input-group w-100">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Search products..." 
+                        [(ngModel)]="shopParams.search"
+                        (keyup.enter)="onSearch()">
+                    <button class="btn btn-outline-secondary" type="button" (click)="onSearch()">
+                        <mat-icon>search</mat-icon>
+                    </button>
+                </div>
+    
+                <button mat-stroked-button [matMenuTriggerFor]="sortMenu">
+                    <mat-icon>swap_vert</mat-icon>
+                    Sort
+                </button>
+                <mat-menu #sortMenu="matMenu">
+                    @for (option of sortOptions; track option.value) {
+                        <button mat-menu-item (click)="onSortSelected(option.value)">
+                            <mat-icon>{{ option.icon }}</mat-icon>
+                            <span>{{ option.display }}</span>
+                        </button>
+                    }
+                </mat-menu>
+    
+                <button mat-stroked-button (click)="openFiltersDialog()" class="filter-btn">
+                    <mat-icon>filter_list</mat-icon>
+                    Filters
                 </button>
             </div>
-
-            <button mat-stroked-button [matMenuTriggerFor]="sortMenu">
-                <mat-icon>swap_vert</mat-icon>
-                Sort
-            </button>
-            <mat-menu #sortMenu="matMenu">
-                @for (option of sortOptions; track option.value) {
-                    <button mat-menu-item (click)="onSortSelected(option.value)">
-                        <mat-icon>{{ option.icon }}</mat-icon>
-                        <span>{{ option.display }}</span>
-                    </button>
-                }
-            </mat-menu>
-
-            <button mat-stroked-button (click)="openFiltersDialog()" class="filter-btn">
-                <mat-icon>filter_list</mat-icon>
-                Filters
-            </button>
+        </div>
+    
+        <div class="product-list">
+            @for (product of products.data; track product.id) {
+                <app-product-item [product]="product"></app-product-item>
+            }
         </div>
     </div>
-
-    <div class="product-list">
-        @for (product of products?.data; track product.id) {
-            <app-product-item [product]="product"></app-product-item>
-        }
-    </div>
-</div>
+}

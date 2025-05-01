@@ -1,0 +1,100 @@
+<div class="py-5">
+    @if (loading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    } @else if (product) {
+      <div class="row g-5">
+        <div class="col-md-6">
+          <mat-card class="product-image-container p-3 h-100">
+            <img 
+              [src]="product.pictureUrl" 
+              [alt]="product.name" 
+              class="img-fluid rounded-3 product-image"
+            >
+          </mat-card>
+        </div>
+  
+        <div class="col-md-6">
+          <div class="product-details h-100 d-flex flex-column">
+            <h1 class="product-title mb-3">{{product.name}}</h1>
+            
+            <div class="d-flex align-items-center mb-3">
+              <span class="badge bg-primary me-2">{{product.brand}}</span>
+              <span class="badge bg-secondary">{{product.type}}</span>
+            </div>
+  
+            <h2 class="product-price mb-4">
+              {{product.price | currency:'USD':'symbol':'1.2-2'}}
+            </h2>
+  
+            <p class="product-description mb-4">
+              {{product.description}}
+            </p>
+  
+            <mat-divider class="my-4"></mat-divider>
+  
+            <div class="stock-info mb-4">
+              @if (product.quantityInStock > 0) {
+                <p class="text-success">
+                  <mat-icon>check_circle</mat-icon>
+                  In Stock ({{product.quantityInStock}} available)
+                </p>
+              } @else {
+                <p class="text-danger">
+                  <mat-icon>cancel</mat-icon>
+                  Out of Stock
+                </p>
+              }
+            </div>
+  
+            <div class="quantity-selector mb-4">
+              <label for="quantity" class="form-label">Quantity:</label>
+              <div class="input-group" style="max-width: 150px;">
+                <button 
+                  class="btn btn-outline-primary" 
+                  type="button"
+                  (click)="decrementQuantity()"
+                  [disabled]="quantity <= 1"
+                >
+                  <mat-icon>remove</mat-icon>
+                </button>
+                <input 
+                  type="number" 
+                  class="form-control text-center" 
+                  [(ngModel)]="quantity"
+                  min="1" 
+                  [max]="product.quantityInStock"
+                >
+                <button 
+                  class="btn btn-outline-primary" 
+                  type="button"
+                  (click)="incrementQuantity()"
+                  [disabled]="quantity >= product.quantityInStock"
+                >
+                  <mat-icon>add</mat-icon>
+                </button>
+              </div>
+            </div>
+  
+            <button 
+              mat-raised-button 
+              color="primary" 
+              class="add-to-cart-btn py-2 bg-primary text-white"
+              (click)="addToCart()"
+              [disabled]="product.quantityInStock <= 0"
+            >
+              <mat-icon>add_shopping_cart</mat-icon>
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="alert alert-danger mt-4" role="alert">
+        Product not found!
+      </div>
+    }
+  </div>

@@ -20,6 +20,6 @@ import { CommonModule } from '@angular/common';
 })
 export class HeaderComponent {
   isMenuCollapsed = true;
-  cartItemCount: number = 3; // replace with dynamic data from your cart service
+  cartItemCount: number = 3; 
 
 }

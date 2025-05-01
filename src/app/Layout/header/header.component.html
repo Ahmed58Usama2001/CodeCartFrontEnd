@@ -1,56 +1,55 @@
-<header class="navbar navbar-expand-lg navbar-dark   bg-primary  px-4 shadow">
-    <a class="navbar-brand d-flex align-items-center me-lg-5" routerLink="/">
-      <img src="images/logo.png" alt="Logo" height="40" class="me-2">
-      <span class="fw-bold">CodeCart</span>
-    </a>
-  
-    <button mat-icon-button class="d-lg-none" (click)="isMenuCollapsed = !isMenuCollapsed">
-      <mat-icon>menu</mat-icon>
-    </button>
-  
-    <!-- Navbar Content -->
-    <nav [ngbCollapse]="isMenuCollapsed" class="navbar-collapse">
-      <!-- Centered Navigation Links -->
-      <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-        <li class="nav-item mx-2">
-          <a class="nav-link fs-5 fw-semibold" routerLink="/" routerLinkActive="active">Home</a>
-        </li>
-        <li class="nav-item mx-2">
-          <a class="nav-link fs-5 fw-semibold" routerLink="/shop" routerLinkActive="active">Shop</a>
-        </li>
-        <li class="nav-item mx-2">
-          <a class="nav-link fs-5 fw-semibold" routerLink="/contact" routerLinkActive="active">Contact</a>
-        </li>
-      </ul>
-  
-      <!-- Action Buttons (Right Side) -->
-<div class="d-flex align-items-center gap-3">
-    <!-- Cart -->
-    <!-- Cart -->
-<div class="position-relative d-flex align-items-center">
-    <button mat-icon-button class="text-white" routerLink="/cart">
-      <mat-icon class="text-white">shopping_cart</mat-icon>
-    </button>
-    <span 
-      class="position-absolute top-1/4 start-100 translate-middle badge rounded-pill bg-danger"
-      style="font-size: 0.75rem;"
-    >
-      {{ cartItemCount }}
-      <span class="visually-hidden">items in cart</span>
-    </span>
-  </div>
-  
-  
-    <!-- Login/Register -->
-    <button mat-raised-button color="primary" routerLink="/login">
-      <mat-icon>login</mat-icon>
-      Login
-    </button>
-    <button mat-raised-button color="primary" routerLink="/register">
-      <mat-icon>person_add</mat-icon>
-      Register
-    </button>
-  </div>
-  
-    </nav>
-  </header>
+<header class="navbar navbar-expand-lg navbar-dark bg-primary px-4 shadow">
+  <a class="navbar-brand d-flex align-items-center me-lg-5" routerLink="/">
+    <img src="images/logo.png" alt="Logo" height="40" class="me-2">
+    <span class="fw-bold">CodeCart</span>
+  </a>
+
+  <button mat-icon-button class="d-lg-none" (click)="isMenuCollapsed = !isMenuCollapsed">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <nav [ngbCollapse]="isMenuCollapsed" class="navbar-collapse">
+    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+      <li class="nav-item mx-2">
+        <a class="nav-link fs-5 fw-semibold" 
+           routerLink="/" 
+           routerLinkActive="active" 
+           [routerLinkActiveOptions]="{exact: true}">Home</a>
+      </li>
+      <li class="nav-item mx-2">
+        <a class="nav-link fs-5 fw-semibold" 
+           routerLink="/shop" 
+           routerLinkActive="active">Shop</a>
+      </li>
+      <li class="nav-item mx-2">
+        <a class="nav-link fs-5 fw-semibold" 
+           routerLink="/contact" 
+           routerLinkActive="active">Contact</a>
+      </li>
+    </ul>
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="position-relative d-flex align-items-center">
+        <button mat-icon-button class="text-white" routerLink="/cart">
+          <mat-icon class="text-white">shopping_cart</mat-icon>
+        </button>
+        <span 
+          class="position-absolute top-1/4 start-100 translate-middle badge rounded-pill bg-danger"
+          style="font-size: 0.75rem;"
+        >
+          {{ cartItemCount }}
+          <span class="visually-hidden">items in cart</span>
+        </span>
+      </div>
+      
+      <button mat-raised-button color="primary" routerLink="/login">
+        <mat-icon>login</mat-icon>
+        Login
+      </button>
+      <button mat-raised-button color="primary" routerLink="/register">
+        <mat-icon>person_add</mat-icon>
+        Register
+      </button>
+    </div>
+  </nav>
+</header>

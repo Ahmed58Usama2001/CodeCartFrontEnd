@@ -1,3 +1,19 @@
+.nav-link.active {
+  color: white !important;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+@media (max-width: 991.98px) {
+  .navbar-collapse {
+    padding-top: 1rem;
+  }
+  
+  .navbar-nav {
+    margin-bottom: 1rem;
+  }
+}
+
 @media (min-width: 992px) {
   .navbar-collapse {
     display: flex !important;
@@ -7,6 +23,6 @@
   }
 
   .navbar-nav {
-    margin: 0 auto; /* Center in flex container */
+    margin: 0 auto; 
   }
 }

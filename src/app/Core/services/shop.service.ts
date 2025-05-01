@@ -16,20 +16,17 @@ export class ShopService {
   brands:string[]=[]
   types:string[]=[]
    
-  getProducts(brands?:string[] , types?:string[]){
+getProducts(brands?: string[], types?: string[], sort?: string) {
+  let params = new HttpParams();
 
-    let params = new HttpParams()
+  if (brands?.length) params = params.append('brands', brands.join(','));
+  if (types?.length) params = params.append('types', types.join(','));
+  if (sort) params = params.append('sort', sort);
 
-    if(brands && brands.length>0)
-      params=params.append('brands',brands.join(','))
+  params = params.append('pageSize', 20);
 
-    if(types && types.length>0)
-      params=params.append('types',types.join(','))
-
-    params=params.append('pageSize',20)
-
-    return this.http.get<Pagination<Product>>(this.baseUrl + 'products' , {params})
-  }
+  return this.http.get<Pagination<Product>>(this.baseUrl + 'products', { params });
+}
 
     getBrands(){
     if(this.brands.length>0) return;

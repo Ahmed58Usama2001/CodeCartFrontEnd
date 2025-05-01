@@ -13,7 +13,6 @@
             </mat-selection-list>
         </div>
         
-        <!-- Vertical Divider -->
         <mat-divider [vertical]="true" class="my-5"></mat-divider>
         
         <div class="flex-1">
@@ -27,13 +26,27 @@
             </mat-selection-list>
         </div>
     </div>
-    
-    <div class="d-flex justify-content-end gap-3">
-        <button mat-raised-button class="bg-primary text-white">
-            Cancel
-        </button>
-        <button mat-raised-button class="bg-primary text-white" (click)="applyFilters()">
-            Apply Filters
-        </button>
+    <div class="p-4">
+        
+        <div class="d-flex justify-content-between align-items-center mt-4">
+            <button mat-raised-button 
+                    class="bg-primary text-white"
+                    (click)="clearFilters()">
+                Clear All
+            </button>
+            
+            <div class="d-flex gap-3">
+                <button mat-raised-button 
+                        class="bg-primary text-white" 
+                        (click)="onCancel()">
+                    Cancel
+                </button>
+                <button mat-raised-button 
+                        class="bg-primary text-white" 
+                        (click)="applyFilters()">
+                    Apply
+                </button>
+            </div>
+        </div>
     </div>
 </div>

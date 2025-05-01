@@ -21,20 +21,26 @@ import { ShopService } from '../../../Core/services/shop.service';
 })
 
 export class FiltersDialogeComponent {
-shopService= inject(ShopService)
-private dialogRef = inject(MatDialogRef<FiltersDialogeComponent>)
-data = inject(MAT_DIALOG_DATA)
+  shopService = inject(ShopService);
+  private dialogRef = inject(MatDialogRef<FiltersDialogeComponent>);
+  data = inject(MAT_DIALOG_DATA);
 
-selectedBrands:string[] = this.data.selectedBrands
-selectedTypes:string[] = this.data.selectedTypes
+  selectedBrands: string[] = [...this.data.selectedBrands];
+  selectedTypes: string[] = [...this.data.selectedTypes];
 
-applyFilters() {
-  console.log('Applying filters:', this.selectedBrands, this.selectedTypes); // Add this
-  this.dialogRef.close({
-    selectedBrands: this.selectedBrands,
-    selectedTypes: this.selectedTypes
-  });
-}
+  applyFilters() {
+    this.dialogRef.close({
+      selectedBrands: this.selectedBrands,
+      selectedTypes: this.selectedTypes
+    });
+  }
 
+  onCancel() {
+    this.dialogRef.close();
+  }
 
+  clearFilters() {
+    this.selectedBrands = [];
+    this.selectedTypes = [];
+  }
 }

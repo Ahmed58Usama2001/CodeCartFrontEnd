@@ -12,6 +12,8 @@ import { ShopParams } from '../../Shared/models/ShopParams';
 import {MatPaginator} from '@angular/material/paginator';
 import { Pagination } from '../../Shared/models/Pagination';
 import { PageEvent } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-shop',
@@ -22,7 +24,8 @@ import { PageEvent } from '@angular/material/paginator';
     MatButtonModule,
     MatIconModule,
     MatPaginator,
-    
+    FormsModule,
+    CommonModule
   ],
   templateUrl: './shop.component.html',
   styleUrl: './shop.component.css'
@@ -68,6 +71,11 @@ export class ShopComponent implements OnInit {
   onSortSelected(sortOption: string) {
     this.shopParams.sort = sortOption;
     this.shopParams.pageNumber = 1;
+    this.getProducts();
+  }
+
+  onSearch() {
+    this.shopParams.pageNumber = 1; 
     this.getProducts();
   }
 

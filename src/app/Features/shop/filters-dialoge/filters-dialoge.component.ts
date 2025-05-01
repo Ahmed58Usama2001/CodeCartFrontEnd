@@ -19,6 +19,7 @@ import { ShopService } from '../../../Core/services/shop.service';
   templateUrl: './filters-dialoge.component.html',
   styleUrl: './filters-dialoge.component.css'
 })
+
 export class FiltersDialogeComponent {
 shopService= inject(ShopService)
 private dialogRef = inject(MatDialogRef<FiltersDialogeComponent>)
@@ -27,10 +28,13 @@ data = inject(MAT_DIALOG_DATA)
 selectedBrands:string[] = this.data.selectedBrands
 selectedTypes:string[] = this.data.selectedTypes
 
-applyFilters(){
+applyFilters() {
+  console.log('Applying filters:', this.selectedBrands, this.selectedTypes); // Add this
   this.dialogRef.close({
-    selectedBrands:this.selectedBrands,
-    selectedTypes:this.selectedTypes
-  })
+    selectedBrands: this.selectedBrands,
+    selectedTypes: this.selectedTypes
+  });
 }
+
+
 }

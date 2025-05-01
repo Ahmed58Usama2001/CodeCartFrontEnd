@@ -46,13 +46,15 @@ export class ShopComponent implements OnInit {
       }
     })
 
-    dialogRef.afterClosed().subscribe({
-      next:result=>{
-        if(result){
-          this.selectedBrands=result.selectedBrands,
-          this.selectedTypes = result.selectedTypes
-        }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.selectedBrands = result.selectedBrands;
+        this.selectedTypes = result.selectedTypes;
+        this.shopService.getProducts(this.selectedBrands, this.selectedTypes).subscribe({
+          next:response=>this.products=response.data,
+          error:error=>console.log(error)          
+        })
       }
-    })
+    });
   }
 }

@@ -1,10 +1,10 @@
 <div class="p-4">
     <h2 class="text-xl font-bold mb-4">Filter Products</h2>
     
-    <div class="flex flex-row gap-8">  <!-- Added flex container for horizontal layout -->
+    <div class="d-flex flex-row justify-content-between gap-8">  
         <div class="flex-1">
             <h3 class="font-semibold text-lg mb-2">Brands</h3>
-            <mat-selection-list>
+            <mat-selection-list [(ngModel)]="selectedBrands" [multiple]="true">
                 @for (brand of shopService.brands; track brand) {
                     <mat-list-option [value]="brand" class="hover:bg-gray-100">
                         {{ brand }}
@@ -13,9 +13,12 @@
             </mat-selection-list>
         </div>
         
+        <!-- Vertical Divider -->
+        <mat-divider [vertical]="true" class="my-5"></mat-divider>
+        
         <div class="flex-1">
             <h3 class="font-semibold text-lg mb-2">Types</h3>
-            <mat-selection-list>
+            <mat-selection-list [(ngModel)]="selectedTypes" [multiple]="true">
                 @for (type of shopService.types; track type) {
                     <mat-list-option [value]="type" class="hover:bg-gray-100">
                         {{ type }}
@@ -25,13 +28,11 @@
         </div>
     </div>
     
-    <mat-divider class="my-4"></mat-divider>
-    
-    <div class="flex justify-end gap-3 mt-6">
-        <button mat-stroked-button class="mr-2">
+    <div class="d-flex justify-content-end gap-3">
+        <button mat-raised-button class="bg-primary text-white">
             Cancel
         </button>
-        <button mat-raised-button color="primary">
+        <button mat-raised-button class="bg-primary text-white" (click)="applyFilters()">
             Apply Filters
         </button>
     </div>

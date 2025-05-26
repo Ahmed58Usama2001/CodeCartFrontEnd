@@ -1,0 +1,18 @@
+.mat-card-header.bg-danger {
+    background-color: #dc3545 !important;
+    padding: 1rem;
+    border-radius: 4px 4px 0 0;
+  }
+  
+  .mat-card {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .img-fluid {
+    filter: drop-shadow(2px 4px 6px rgba(0,0,0,0.1));
+  }
+  
+  .alert {
+    border-left: 4px solid #ffc107;
+  }

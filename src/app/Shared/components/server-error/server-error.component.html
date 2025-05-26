@@ -1,0 +1,57 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8 col-lg-6">
+        <mat-card class="shadow-lg">
+          <mat-card-header class="bg-danger text-white">
+            <mat-card-title class="d-flex align-items-center">
+              <mat-icon class="me-2">error_outline</mat-icon>
+              Server Error
+            </mat-card-title>
+          </mat-card-header>
+  
+          <mat-card-content class="p-4">
+            <div class="text-center mb-4">
+              <img src="https://cdn-icons-png.flaticon.com/512/753/753345.png" 
+                   alt="Server Error" 
+                   class="img-fluid"
+                   style="max-height: 150px;">
+            </div>
+  
+            <h4 class="text-center mb-4">Oops! Something went wrong on our end.</h4>
+            
+            <div *ngIf="error" class="alert alert-warning">
+              <h5 class="alert-heading">Error Details:</h5>
+              <div *ngIf="error.title">
+                <strong>Title:</strong> {{ error.title }}
+              </div>
+              <div *ngIf="error.status">
+                <strong>Status Code:</strong> {{ error.status }}
+              </div>
+              <div *ngIf="error.detail">
+                <strong>Details:</strong> {{ error.detail }}
+              </div>
+              <div *ngIf="error.traceId" class="mt-2">
+                <small class="text-muted">Trace ID: {{ error.traceId }}</small>
+              </div>
+            </div>
+  
+            <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+              <button mat-raised-button 
+                      color="primary" 
+                      class="me-md-2"
+                      (click)="reloadPage()">
+                <mat-icon class="me-1">refresh</mat-icon>
+                Try Again
+              </button>
+              <button mat-raised-button 
+              color="accent"
+              routerLink="/">  
+        <mat-icon class="me-1">home</mat-icon>
+        Go Home
+      </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>

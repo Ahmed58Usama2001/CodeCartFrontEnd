@@ -1,0 +1,70 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title text-center mb-0">Error Testing</h3>
+          </div>
+          <div class="card-body">
+            <p class="text-center text-muted mb-4">
+              Click the buttons below to test different error responses from the API
+            </p>
+            
+            <div class="d-grid gap-3">
+              <button 
+                mat-stroked-button 
+                color="warn"
+                class="py-3"
+                (click)="get404Error()">
+                <mat-icon>search_off</mat-icon>
+                404 - Not Found Error
+              </button>
+  
+              <button 
+                mat-stroked-button 
+                color="warn"
+                class="py-3"
+                (click)="get400BadRequest()">
+                <mat-icon>error_outline</mat-icon>
+                400 - Bad Request Error
+              </button>
+  
+              <button 
+                mat-stroked-button 
+                color="warn"
+                class="py-3"
+                (click)="get401Unauthorized()">
+                <mat-icon>lock</mat-icon>
+                401 - Unauthorized Error
+              </button>
+  
+              <button 
+                mat-stroked-button 
+                color="warn"
+                class="py-3"
+                (click)="get400ValidationError()">
+                <mat-icon>rule</mat-icon>
+                400 - Validation Error
+              </button>
+  
+              <button 
+                mat-stroked-button 
+                color="warn"
+                class="py-3"
+                (click)="get500ServerError()">
+                <mat-icon>warning</mat-icon>
+                500 - Server Error
+              </button>
+            </div>
+  
+            <div class="mt-4">
+              <div class="alert alert-info" role="alert">
+                <mat-icon class="me-2">info</mat-icon>
+                <strong>Note:</strong> Check the browser console (F12) to see the error responses.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

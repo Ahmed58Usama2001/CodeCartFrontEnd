@@ -1,0 +1,37 @@
+.card {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 10px;
+  }
+  
+  .card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 10px 10px 0 0 !important;
+  }
+  
+  button {
+    height: 60px !important;
+    font-size: 16px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  button mat-icon {
+    margin-right: 8px;
+  }
+  
+  .alert {
+    border-radius: 8px;
+    border: none;
+  }
+  
+  .alert-info {
+    background-color: #e3f2fd;
+    color: #1976d2;
+  }

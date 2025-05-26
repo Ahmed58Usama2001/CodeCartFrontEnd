@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatCardModule } from '@angular/material/card';
+import { SnackbarService } from '../../../Core/services/snackbar.service';
 
 @Component({
   selector: 'app-product-details',
@@ -31,7 +32,7 @@ import { MatCardModule } from '@angular/material/card';
 export class ProductDetailsComponent implements OnInit {
   private shopService = inject(ShopService);
   private activatedRoute = inject(ActivatedRoute);
-  private snackBar = inject(MatSnackBar);
+  private snackBar = inject(SnackbarService);
   
   product?: Product;
   quantity: number = 1;
@@ -59,11 +60,7 @@ export class ProductDetailsComponent implements OnInit {
 
   addToCart() {
     if (this.product) {
-      // Here you would typically call a cart service
-      this.snackBar.open(`${this.quantity} ${this.product.name} added to cart`, 'Close', {
-        duration: 3000,
-        panelClass: ['success-snackbar']
-      });
+      this.snackBar.success(`Added ${this.quantity} of ${this.product.name} to cart`);
     }
   }
 

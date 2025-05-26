@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { NgbCollapseModule } from '@ng-bootstrap/ng-bootstrap';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { BusyService } from '../../Core/services/busy.service';
+import { MatProgressBarModule } from '@angular/material/progress-bar'; // Import the module
 
 @Component({
   selector: 'app-header',
@@ -13,7 +15,8 @@ import { CommonModule } from '@angular/common';
     RouterModule,
     MatIconModule,
     MatButtonModule,
-    NgbCollapseModule
+    NgbCollapseModule,
+    MatProgressBarModule
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']
@@ -21,5 +24,7 @@ import { CommonModule } from '@angular/common';
 export class HeaderComponent {
   isMenuCollapsed = true;
   cartItemCount: number = 3; 
+
+   busyService = inject(BusyService);
 
 }

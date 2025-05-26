@@ -1,0 +1,20 @@
+/* Custom styles */
+.mat-card {
+    border-radius: 12px;
+    border-left: 6px solid #dc3545;
+  }
+  
+  .mat-card-header .mat-card-title {
+    font-size: 2rem;
+    font-weight: 500;
+  }
+  
+  button[mat-raised-button] {
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+  }
+  
+  button[mat-raised-button]:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }

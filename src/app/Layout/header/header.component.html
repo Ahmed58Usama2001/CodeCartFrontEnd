@@ -23,8 +23,8 @@
       </li>
       <li class="nav-item mx-2">
         <a class="nav-link fs-5 fw-semibold" 
-           routerLink="/contact" 
-           routerLinkActive="active">Contact</a>
+           routerLink="/test-error" 
+           routerLinkActive="active">Errors</a>
       </li>
     </ul>
 
@@ -53,3 +53,7 @@
     </div>
   </nav>
 </header>
+
+@if (busyService.loading) {
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}

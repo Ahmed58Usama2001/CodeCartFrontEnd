@@ -7,6 +7,7 @@ import { CurrencyPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Cart } from '../../../Shared/models/Cart';
 import { CartService } from '../../../Core/services/cart.service';
+import { SnackbarService } from '../../../Core/services/snackbar.service';
 
 @Component({
   selector: 'app-product-item',
@@ -23,4 +24,10 @@ export class ProductItemComponent {
   @Input() product?:Product;
 
   cartService = inject(CartService);
+  snackbarService = inject(SnackbarService)
+
+  addItemToCart(product:Product){
+    this.cartService.addItemToCart(product);
+    this.snackbarService.success(`Product ${product.name} added to cart successfully!`);
+  }
 }

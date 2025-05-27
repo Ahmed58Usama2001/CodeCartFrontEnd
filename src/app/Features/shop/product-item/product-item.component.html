@@ -9,7 +9,7 @@
         </mat-card-content>
         
         <mat-card-actions class="card-actions" (click)="$event.stopPropagation()">
-          <button mat-raised-button color="primary" (click)="cartService.addItemToCart(product)" >
+          <button mat-raised-button color="primary" (click)="addItemToCart(product)" >
             <mat-icon>add_shopping_cart</mat-icon>
             Add to Cart
           </button>

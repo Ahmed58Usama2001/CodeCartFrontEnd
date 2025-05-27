@@ -47,3 +47,19 @@
   --mat-mdc-snack-bar-button-color: #fff !important;
   --mdc-snackbar-supporting-text-color: #fff !important;
 }
+
+#initial-splash {
+  transition: opacity 0.5s ease-out;
+  z-index: 9999;
+  background-color: white;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+#initial-splash.fade-out {
+  opacity: 0;
+  pointer-events: none;
+}

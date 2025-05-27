@@ -1,72 +1,73 @@
-<div class="cart-item p-3 rounded shadow-sm border mb-3 bg-white">
-  <div class="row align-items-center g-4">
+<div class="cart-item p-3 rounded-4 shadow-sm border mb-4 bg-white position-relative">
+  <div class="row align-items-center g-3">
+
+    <!-- Product Image & Quantity Badge -->
     <div class="col-12 col-sm-3 col-md-2">
       <div class="position-relative">
-        <img [src]="item.pictureUrl" 
-             [alt]="item.productName"
-             class="img-fluid rounded-2 shadow-sm"
-             style="width: 100%; height: 100px; object-fit: cover;">
-        <div class="position-absolute top-0 start-0 translate-middle badge rounded-circle bg-primary"
-             style="font-size: 0.75rem; width: 26px; height: 26px; line-height: 1.6;">
-          {{ item.quantity }}
+        <img [src]="item().pictureUrl" 
+             [alt]="item().productName"
+             class="img-fluid rounded-3 shadow-sm"
+             style="width: 100%; height: 110px; object-fit: cover;">
+
+        <div class="position-absolute top-0 start-0 translate-middle badge rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+             style="font-size: 0.75rem; width: 28px; height: 28px;">
+          {{ item().quantity }}
         </div>
       </div>
     </div>
 
+    <!-- Product Info -->
     <div class="col-12 col-sm-5 col-md-6">
-      <div class="product-info">
-        <h6 class="fw-bold text-dark mb-1">
-          {{ item.productName }}
-        </h6>
-        <div class="product-meta mb-2">
-          <span class="badge bg-light text-dark me-2 d-inline-flex align-items-center">
-            <mat-icon class="me-1" style="font-size: 1rem;">business</mat-icon>
-            {{ item.brand }}
-          </span>
-          <span class="badge bg-light text-dark d-inline-flex align-items-center">
-            <mat-icon class="me-1" style="font-size: 1rem;">category</mat-icon>
-            {{ item.type }}
-          </span>
-        </div>
-        <div>
-          <span class="text-success fw-semibold fs-6">${{ item.price | number:'1.2-2' }}</span>
-          <small class="text-muted ms-2">per item</small>
-        </div>
+      <h6 class="fw-semibold text-dark mb-1">
+        {{ item().productName }}
+      </h6>
+
+      <div class="mb-2">
+        <span class="badge bg-light text-dark me-2 d-inline-flex align-items-center shadow-sm">
+          <mat-icon class="me-1" style="font-size: 1rem;">business</mat-icon>
+          {{ item().brand }}
+        </span>
+        <span class="badge bg-light text-dark d-inline-flex align-items-center shadow-sm">
+          <mat-icon class="me-1" style="font-size: 1rem;">category</mat-icon>
+          {{ item().type }}
+        </span>
+      </div>
+
+      <div>
+        <span class="text-success fw-bold fs-6">${{ item().price | number:'1.2-2' }}</span>
+        <small class="text-muted ms-1">per item</small>
       </div>
     </div>
 
-    <div class="col-12 col-sm-2 col-md-2">
-      <div class="input-group input-group-sm shadow-sm rounded overflow-hidden">
-        <button class="btn btn-outline-secondary px-2" 
-                type="button"
-                (click)="decreaseQuantity()"
-                [disabled]="item.quantity <= 1">
-          <mat-icon style="font-size: 1rem;">remove</mat-icon>
+    <!-- Quantity Controls -->
+    <div class="col-6 col-sm-2 col-md-2">
+      <div class="d-flex align-items-center gap-2 justify-content-start">
+        <button mat-mini-fab color="accent"
+                [disabled]="item().quantity <= 1"
+                (click)="decreaseQuantity()">
+          <mat-icon>remove</mat-icon>
         </button>
-        
-        <button class="btn btn-outline-secondary px-2" 
-                type="button"
-                (click)="increaseQuantity()">
-          <mat-icon style="font-size: 1rem;">add</mat-icon>
+
+        <span class="fw-semibold fs-6">{{ item().quantity }}</span>
+
+        <button mat-mini-fab color="accent" (click)="increaseQuantity()">
+          <mat-icon>add</mat-icon>
         </button>
       </div>
     </div>
 
-    <div class="col-12 col-sm-2 col-md-2">
-      <div class="text-end">
-        <div class="item-total mb-2">
-          <span class="fw-bold text-primary fs-5">
-            ${{ (item.price * item.quantity) | number:'1.2-2' }}
-          </span>
-        </div>
-        <button mat-icon-button 
-                color="warn"
-                (click)="removeItem()"
-                matTooltip="Remove from cart"
-                class="btn-sm">
-          <mat-icon style="font-size: 1.4rem;">delete_outline</mat-icon>
-        </button>
+    <!-- Total & Remove -->
+    <div class="col-6 col-sm-2 col-md-2 text-end">
+      <div class="item-total mb-2">
+        <span class="fw-bold text-primary fs-5">
+          ${{ (item().price * item().quantity) | number:'1.2-2' }}
+        </span>
       </div>
+      <button mat-icon-button color="warn" class="bg-danger text-white  shadow-sm"
+              matTooltip="Remove from cart"
+              (click)="removeItemFromCart()">
+        <mat-icon>delete_outline</mat-icon>
+      </button>
     </div>
   </div>
 </div>

@@ -3,13 +3,10 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { CartItemComponent } from './cart-item/cart-item.component';
 import { CartService } from '../../Core/services/cart.service';
 import { SnackbarService } from '../../Core/services/snackbar.service';
-
+import { OrderSummaryComponent } from '../../Shared/components/order-summary/order-summary.component';
 
 @Component({
   selector: 'app-cart',
@@ -18,9 +15,8 @@ import { SnackbarService } from '../../Core/services/snackbar.service';
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    CartItemComponent
+    CartItemComponent,
+    OrderSummaryComponent
   ],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css'
@@ -70,18 +66,6 @@ export class CartComponent implements OnInit {
     }
   }
 
-  calculateSubtotal(): number {
-    return this.subtotal();
-  }
-
-  calculateTax(): number {
-    return this.tax();
-  }
-
-  calculateTotal(): number {
-    return this.total();
-  }
-
   continueShopping() {
     this.router.navigate(['/shop']); 
   }
@@ -93,18 +77,17 @@ export class CartComponent implements OnInit {
         this.cartService.setCart(cart);
         
         this.snackBar.success('Cart cleared successfully!');
-      
     }
   }
 
   proceedToCheckout() {
-    // Navigate to checkout page
-    // You can inject Router and navigate
+    this.router.navigate(['/checkout']);
     console.log('Proceed to checkout clicked');
   }
 
   applyPromoCode(promoCode: string) {
     // Implement promo code logic
     console.log('Applying promo code:', promoCode);
+    // You can add your promo code validation logic here
   }
 }

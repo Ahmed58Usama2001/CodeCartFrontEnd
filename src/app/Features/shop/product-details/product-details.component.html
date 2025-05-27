@@ -83,11 +83,11 @@
               mat-raised-button 
               color="primary" 
               class="add-to-cart-btn py-2 bg-primary text-white"
-              (click)="addToCart()"
+              (click)="UpdateCart()"
               [disabled]="product.quantityInStock <= 0"
             >
               <mat-icon>add_shopping_cart</mat-icon>
-              Add to Cart
+              {{this.getButtonText()}}
             </button>
           </div>
         </div>
@@ -98,3 +98,5 @@
       </div>
     }
   </div>
+
+ 

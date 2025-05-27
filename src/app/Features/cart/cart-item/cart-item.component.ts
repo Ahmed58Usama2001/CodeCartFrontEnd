@@ -5,6 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { CartItem } from '../../../Shared/models/Cart';
 import { CartService } from '../../../Core/services/cart.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-cart-item',
@@ -13,15 +14,14 @@ import { CartService } from '../../../Core/services/cart.service';
     CommonModule,
     MatIconModule,
     MatButtonModule,
-    MatTooltipModule
+    MatTooltipModule,
+    RouterLink
   ],
   templateUrl: './cart-item.component.html',
   styleUrl: './cart-item.component.css'
 })
 export class CartItemComponent {
   item=input.required<CartItem>();
-  @Output() itemUpdated = new EventEmitter<void>();
-  @Output() itemRemoved = new EventEmitter<void>();
 
   private cartService = inject(CartService);
 

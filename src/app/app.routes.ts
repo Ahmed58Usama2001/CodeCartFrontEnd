@@ -5,6 +5,7 @@ import { ProductDetailsComponent } from './Features/shop/product-details/product
 import { TestErrorComponent } from './Features/test-error/test-error.component';
 import { NotFoundComponent } from './Shared/components/not-found/not-found.component';
 import { ServerErrorComponent } from './Shared/components/server-error/server-error.component';
+import { CartComponent } from './Features/cart/cart.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -13,5 +14,6 @@ export const routes: Routes = [
     {path: 'test-error', component: TestErrorComponent},
     {path: 'not-found', component: NotFoundComponent},
     {path: 'server-error', component: ServerErrorComponent},
+    {path: 'cart', component: CartComponent},
     {path: '**',redirectTo:'not-found' ,pathMatch:'full'}
 ];

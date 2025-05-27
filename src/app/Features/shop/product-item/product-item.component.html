@@ -8,8 +8,8 @@
           <p class="product-price">{{ product.price | currency:'USD':'symbol':'1.2-2' }}</p>
         </mat-card-content>
         
-        <mat-card-actions class="card-actions">
-          <button mat-raised-button color="primary">
+        <mat-card-actions class="card-actions" (click)="$event.stopPropagation()">
+          <button mat-raised-button color="primary" (click)="cartService.addItemToCart(product)" >
             <mat-icon>add_shopping_cart</mat-icon>
             Add to Cart
           </button>

@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   selector: 'app-test-error',
@@ -10,7 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
   styleUrl: './test-error.component.css'
 })
 export class TestErrorComponent {
-  baseUrl = 'https://localhost:7242/api/'
+  baseUrl = environment.apiUrl;
 
   private http = inject(HttpClient)
 

@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { BusyService } from '../../Core/services/busy.service';
 import { MatProgressBarModule } from '@angular/material/progress-bar'; // Import the module
+import { CartService } from '../../Core/services/cart.service';
 
 @Component({
   selector: 'app-header',
@@ -22,9 +23,9 @@ import { MatProgressBarModule } from '@angular/material/progress-bar'; // Import
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent {
-  isMenuCollapsed = true;
-  cartItemCount: number = 3; 
+  isMenuCollapsed = true; 
 
    busyService = inject(BusyService);
+   cartService = inject(CartService);
 
 }

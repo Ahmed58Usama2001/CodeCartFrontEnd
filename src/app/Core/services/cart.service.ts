@@ -3,7 +3,7 @@ import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { Cart, CartItem } from '../../Shared/models/Cart';
 import { Product } from '../../Shared/models/Product';
-import { map } from 'rxjs';
+import { map, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +43,10 @@ export class CartService {
   }
 
   deleteCart() {
-    return this.http.delete(this.baseUrl + 'cart?id=' + this.cart()?.id).subscribe({
+    const cartId = this.cart()?.id;
+    if (!cartId) return;
+    
+    return this.http.delete(this.baseUrl + 'cart?id=' + cartId).subscribe({
       next: () => {
         this.cart.set(null);
         this.removeCartFromStorage();
@@ -94,36 +97,47 @@ export class CartService {
   }
 
   private updateCartStorage(cartId: string) {
-    // Check if user is logged in to determine storage key
-    const user = this.getCurrentUser();
-    if (user && user.email) {
-      localStorage.setItem(`cart_${user.email}`, cartId);
+    // Get current user from localStorage directly to avoid circular dependency
+    const userStr = localStorage.getItem('user');
+    let currentUser = null;
+    
+    if (userStr) {
+      try {
+        currentUser = JSON.parse(userStr);
+      } catch (error) {
+        currentUser = null;
+      }
+    }
+    
+    if (currentUser?.email) {
+      // User is logged in - save to user-specific key
+      localStorage.setItem(`cart_${currentUser.email}`, cartId);
+      // Remove anonymous cart if exists
+      localStorage.removeItem('cart_id');
     } else {
+      // Anonymous user - save to general key
       localStorage.setItem('cart_id', cartId);
     }
   }
 
   private removeCartFromStorage() {
-    const user = this.getCurrentUser();
-    if (user && user.email) {
-      localStorage.removeItem(`cart_${user.email}`);
+    // Get current user from localStorage directly to avoid circular dependency
+    const userStr = localStorage.getItem('user');
+    let currentUser = null;
+    
+    if (userStr) {
+      try {
+        currentUser = JSON.parse(userStr);
+      } catch (error) {
+        currentUser = null;
+      }
+    }
+    
+    if (currentUser?.email) {
+      localStorage.removeItem(`cart_${currentUser.email}`);
     } else {
       localStorage.removeItem('cart_id');
     }
-  }
-
-  private getCurrentUser() {
-    // This is a simplified way to get current user
-    // You might need to inject AccountService here or use a different approach
-    const userStr = localStorage.getItem('user');
-    if (userStr) {
-      try {
-        return JSON.parse(userStr);
-      } catch {
-        return null;
-      }
-    }
-    return null;
   }
 
   private isProduct(item: CartItem | Product): item is Product {

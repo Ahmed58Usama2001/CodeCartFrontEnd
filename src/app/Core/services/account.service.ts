@@ -3,9 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map, catchError, of } from 'rxjs';
 import { Address, FacebookSignInVM, ForgetPasswordDto, GoogleSignInVM, LoginDto, RefreshTokenDto, RegisterDto, ResetPasswordDto, User, UserDto } from '../../Shared/models/User';
 import { environment } from '../../../environments/environment.development';
-import { InitService } from './init.service';
-
-
+import { AuthStateService } from './authstate.service';
 
 declare const google: any;
 declare interface FB {
@@ -27,27 +25,26 @@ declare const FB: FB;
   providedIn: 'root'
 })
 export class AccountService {
-  private baseUrl = environment.apiUrl+'account';
+  private baseUrl = environment.apiUrl + 'account';
 
-  private initService = inject(InitService);
+  private authStateService = inject(AuthStateService);
 
-  
   private currentUserSignal = signal<User | null>(null);
   private tokenSignal = signal<string | null>(null);
   private refreshTokenSignal = signal<string | null>(null);
   private loadingSignal = signal<boolean>(false);
   private googleLoadedSignal = signal<boolean>(false);
   private facebookLoadedSignal = signal<boolean>(false);
-  
+
   public readonly currentUser = this.currentUserSignal.asReadonly();
   public readonly token = this.tokenSignal.asReadonly();
   public readonly refreshToken = this.refreshTokenSignal.asReadonly();
   public readonly loading = this.loadingSignal.asReadonly();
   public readonly googleLoaded = this.googleLoadedSignal.asReadonly();
   public readonly facebookLoaded = this.facebookLoadedSignal.asReadonly();
-  
+
   public readonly isLoggedIn = computed(() => this.currentUser() !== null);
-  public readonly isAuthenticated = computed(() => 
+  public readonly isAuthenticated = computed(() =>
     this.currentUser() !== null && this.token() !== null
   );
   public readonly userDisplayName = computed(() => {
@@ -64,13 +61,14 @@ export class AccountService {
   private readonly FACEBOOK_APP_ID = '1105757407206150';
 
   constructor(private http: HttpClient) {
-    this.loadUserFromStorage();
-    
+    // Don't auto-load from storage in constructor
+    // This will be called by InitService
+
     effect(() => {
       const user = this.currentUser();
       const token = this.token();
       const refreshToken = this.refreshToken();
-      
+
       if (user && token && refreshToken) {
         localStorage.setItem('user', JSON.stringify(user));
         localStorage.setItem('token', token);
@@ -86,105 +84,106 @@ export class AccountService {
     this.initializeFacebookSDK();
   }
 
- register(registerData: RegisterDto): Observable<UserDto | null> {
-  this.loadingSignal.set(true);
-  return this.http.post<UserDto>(`${this.baseUrl}/register`, registerData)
-    .pipe(
-      map(response => {
-        this.loadingSignal.set(false);
-        if (response && response.token) {
-          this.setCurrentUser(response);
-          this.initService.handleUserRegistration(response.email);
-          return response;
-        }
-        return null;
-      }),
-      catchError(error => {
-        this.loadingSignal.set(false);
-        return this.handleError<UserDto | null>('register', null)(error);
-      })
-    );
-}
+  register(registerData: RegisterDto): Observable<UserDto | null> {
+    this.loadingSignal.set(true);
+    return this.http.post<UserDto>(`${this.baseUrl}/register`, registerData)
+      .pipe(
+        map(response => {
+          this.loadingSignal.set(false);
+          if (response && response.token) {
+            this.setCurrentUser(response);
+            this.authStateService.handleUserRegistration(response.email).subscribe();
+            return response;
+          }
+          return null;
+        }),
+        catchError(error => {
+          this.loadingSignal.set(false);
+          return this.handleError<UserDto | null>('register', null)(error);
+        })
+      );
+  }
 
+  login(loginData: LoginDto): Observable<UserDto | null> {
+    this.loadingSignal.set(true);
+    return this.http.post<UserDto>(`${this.baseUrl}/login`, loginData)
+      .pipe(
+        map(response => {
+          this.loadingSignal.set(false);
+          if (response && response.token) {
+            this.setCurrentUser(response);
+            this.authStateService.handleUserLogin(response.email).subscribe();
+            return response;
+          }
+          return null;
+        }),
+        catchError(error => {
+          this.loadingSignal.set(false);
+          return this.handleError<UserDto | null>('login', null)(error);
+        })
+      );
+  }
 
- login(loginData: LoginDto): Observable<UserDto | null> {
-  this.loadingSignal.set(true);
-  return this.http.post<UserDto>(`${this.baseUrl}/login`, loginData)
-    .pipe(
-      map(response => {
-        this.loadingSignal.set(false);
-        if (response && response.token) {
-          this.setCurrentUser(response);
-          this.initService.handleUserLogin(response.email);
-          return response;
-        }
-        return null;
-      }),
-      catchError(error => {
-        this.loadingSignal.set(false);
-        return this.handleError<UserDto | null>('login', null)(error);
-      })
-    );
-}
+  logout(): Observable<any> {
+    this.loadingSignal.set(true);
+    const currentEmail = this.getCurrentUserValue()?.email || null;
+    
+    return this.http.post(`${this.baseUrl}/logout`, {})
+      .pipe(
+        map(() => {
+          this.loadingSignal.set(false);
+          this.authStateService.handleUserLogout(currentEmail).subscribe();
+          this.clearUserData();
+          return true;
+        }),
+        catchError(() => {
+          this.loadingSignal.set(false);
+          this.authStateService.handleUserLogout(currentEmail).subscribe();
+          this.clearUserData();
+          return of(true);
+        })
+      );
+  }
 
   googleSignIn(googleData: GoogleSignInVM): Observable<UserDto | null> {
-  this.loadingSignal.set(true);
-  return this.http.post<UserDto>(`${this.baseUrl}/GoogleSignIn`, googleData)
-    .pipe(
-      map(response => {
-        this.loadingSignal.set(false);
-        if (response && response.token) {
-          this.setCurrentUser(response);
-          this.initService.handleUserLogin(response.email);
-          return response;
-        }
-        return null;
-      }),
-      catchError(error => {
-        this.loadingSignal.set(false);
-        return this.handleError<UserDto | null>('googleSignIn', null)(error);
-      })
-    );
-}
+    this.loadingSignal.set(true);
+    return this.http.post<UserDto>(`${this.baseUrl}/GoogleSignIn`, googleData)
+      .pipe(
+        map(response => {
+          this.loadingSignal.set(false);
+          if (response && response.token) {
+            this.setCurrentUser(response);
+            this.authStateService.handleUserLogin(response.email).subscribe();
+            return response;
+          }
+          return null;
+        }),
+        catchError(error => {
+          this.loadingSignal.set(false);
+          return this.handleError<UserDto | null>('googleSignIn', null)(error);
+        })
+      );
+  }
 
-facebookSignIn(facebookData: FacebookSignInVM): Observable<UserDto | null> {
-  this.loadingSignal.set(true);
-  return this.http.post<UserDto>(`${this.baseUrl}/FacebookSignIn`, facebookData)
-    .pipe(
-      map(response => {
-        this.loadingSignal.set(false);
-        if (response && response.token) {
-          this.setCurrentUser(response);
-          this.initService.handleUserLogin(response.email);
-          return response;
-        }
-        return null;
-      }),
-      catchError(error => {
-        this.loadingSignal.set(false);
-        return this.handleError<UserDto | null>('facebookSignIn', null)(error);
-      })
-    );
-}
-
-logout(): Observable<any> {
-  this.loadingSignal.set(true);
-  return this.http.post(`${this.baseUrl}/logout`, {})
-    .pipe(
-      map(() => {
-        this.loadingSignal.set(false);
-        this.initService.handleUserLogout().subscribe();
-        this.clearUserData();
-        return true;
-      }),
-      catchError(() => {
-        this.loadingSignal.set(false);
-        this.initService.handleUserLogout().subscribe();
-        this.clearUserData();
-        return of(true);
-      })
-    );
-}
+  facebookSignIn(facebookData: FacebookSignInVM): Observable<UserDto | null> {
+    this.loadingSignal.set(true);
+    return this.http.post<UserDto>(`${this.baseUrl}/FacebookSignIn`, facebookData)
+      .pipe(
+        map(response => {
+          this.loadingSignal.set(false);
+          if (response && response.token) {
+            this.setCurrentUser(response);
+            this.authStateService.handleUserLogin(response.email).subscribe();
+            return response;
+          }
+          return null;
+        }),
+        catchError(error => {
+          this.loadingSignal.set(false);
+          return this.handleError<UserDto | null>('facebookSignIn', null)(error);
+        })
+      );
+  }
 
   getCurrentUser(): Observable<UserDto | null> {
     this.loadingSignal.set(true);
@@ -319,7 +318,7 @@ logout(): Observable<any> {
       console.error('Failed to load Facebook SDK');
     };
     document.head.appendChild(script);
-}
+  }
 
   triggerGoogleSignIn(callback: (response: any) => void): void {
     if (!this.googleLoaded()) {
@@ -381,11 +380,12 @@ logout(): Observable<any> {
     this.refreshTokenSignal.set(null);
   }
 
-  private loadUserFromStorage(): void {
+  // Make this method public so InitService can call it
+  public loadUserFromStorage(): void {
     const token = localStorage.getItem('token');
     const refreshToken = localStorage.getItem('refreshToken');
     const userStr = localStorage.getItem('user');
-    
+
     if (token && refreshToken && userStr) {
       try {
         const user = JSON.parse(userStr);

@@ -11,20 +11,14 @@
   <nav [ngbCollapse]="isMenuCollapsed" class="navbar-collapse">
     <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
       <li class="nav-item mx-2">
-        <a class="nav-link fs-5 fw-semibold" 
-           routerLink="/" 
-           routerLinkActive="active" 
-           [routerLinkActiveOptions]="{exact: true}">Home</a>
+        <a class="nav-link fs-5 fw-semibold" routerLink="/" routerLinkActive="active"
+          [routerLinkActiveOptions]="{exact: true}">Home</a>
       </li>
       <li class="nav-item mx-2">
-        <a class="nav-link fs-5 fw-semibold" 
-           routerLink="/shop" 
-           routerLinkActive="active">Shop</a>
+        <a class="nav-link fs-5 fw-semibold" routerLink="/shop" routerLinkActive="active">Shop</a>
       </li>
       <li class="nav-item mx-2">
-        <a class="nav-link fs-5 fw-semibold" 
-           routerLink="/test-error" 
-           routerLinkActive="active">Errors</a>
+        <a class="nav-link fs-5 fw-semibold" routerLink="/test-error" routerLinkActive="active">Errors</a>
       </li>
     </ul>
 
@@ -33,15 +27,20 @@
         <button mat-icon-button class="text-white" routerLink="/cart">
           <mat-icon class="text-white">shopping_cart</mat-icon>
         </button>
-        <span 
-          class="position-absolute top-1/4 start-100 translate-middle badge rounded-pill bg-danger"
-          style="font-size: 0.75rem;"
-        >
+        <span class="position-absolute top-1/4 start-100 translate-middle badge rounded-pill bg-danger"
+          style="font-size: 0.75rem;">
           {{ cartService.itemsCount() }}
           <span class="visually-hidden">items in cart</span>
         </span>
       </div>
-      
+
+      @if(accountService.currentUser()){
+      <button mat-raised-button color="primary" routerLink="/account/login" (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        Logout
+      </button>
+      }
+      @else {
       <button mat-raised-button color="primary" routerLink="/account/login">
         <mat-icon>login</mat-icon>
         Login
@@ -50,10 +49,12 @@
         <mat-icon>person_add</mat-icon>
         Register
       </button>
+      }
+
     </div>
   </nav>
 </header>
 
 @if (busyService.loading) {
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+<mat-progress-bar mode="indeterminate"></mat-progress-bar>
 }

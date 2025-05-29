@@ -35,10 +35,42 @@
       </div>
 
       @if(accountService.currentUser()){
-      <button mat-raised-button color="primary" routerLink="/account/login" (click)="logout()">
-        <mat-icon>logout</mat-icon>
-        Logout
-      </button>
+      <!-- User Menu Dropdown -->
+      <div class="position-relative">
+        <button 
+          mat-button 
+          class="text-white d-flex align-items-center gap-2"
+          [matMenuTriggerFor]="userMenu"
+          style="text-transform: none;">
+          <mat-icon>account_circle</mat-icon>
+          <span class="d-none d-md-inline">{{ accountService.currentUser()?.email }}</span>
+          <mat-icon class="fs-6">keyboard_arrow_down</mat-icon>
+        </button>
+        
+        <mat-menu #userMenu="matMenu" class="mt-2">
+          <div class="px-3 py-2 border-bottom">
+            <small class="text-muted">Signed in as</small>
+            <div class="fw-semibold">{{ accountService.currentUser()?.email }}</div>
+          </div>
+          
+          <button mat-menu-item routerLink="/orders">
+            <mat-icon>receipt_long</mat-icon>
+            <span>My Orders</span>
+          </button>
+          
+          <button mat-menu-item routerLink="/cart">
+            <mat-icon>shopping_cart</mat-icon>
+            <span>Cart ({{ cartService.itemsCount() }})</span>
+          </button>
+          
+          <mat-divider></mat-divider>
+          
+          <button mat-menu-item (click)="logout()">
+            <mat-icon>logout</mat-icon>
+            <span>Logout</span>
+          </button>
+        </mat-menu>
+      </div>
       }
       @else {
       <button mat-raised-button color="primary" routerLink="/account/login">

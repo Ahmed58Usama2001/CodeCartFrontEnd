@@ -9,6 +9,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar'; // Import
 import { CartService } from '../../Core/services/cart.service';
 import { AccountService } from '../../Core/services/account.service';
 import { InitService } from '../../Core/services/init.service';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatMenuModule } from '@angular/material/menu';
 
 @Component({
   selector: 'app-header',
@@ -19,7 +21,11 @@ import { InitService } from '../../Core/services/init.service';
     MatIconModule,
     MatButtonModule,
     NgbCollapseModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+     MatMenuModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDividerModule,
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']

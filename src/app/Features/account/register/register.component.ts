@@ -47,7 +47,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     MatCheckboxModule
   ]
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent  {
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
@@ -73,9 +73,7 @@ export class RegisterComponent implements OnInit {
   hidePassword = true;
   hideConfirmPassword = true;
 
-  ngOnInit() {
-    // External SDKs are automatically initialized by the AccountService
-  }
+
 
   get firstName() {
     return this.registerForm.get('firstName');

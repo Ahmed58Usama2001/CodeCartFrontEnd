@@ -61,8 +61,6 @@ export class AccountService {
   private readonly FACEBOOK_APP_ID = '1105757407206150';
 
   constructor(private http: HttpClient) {
-    // Don't auto-load from storage in constructor
-    // This will be called by InitService
 
     effect(() => {
       const user = this.currentUser();
@@ -144,6 +142,26 @@ export class AccountService {
         })
       );
   }
+
+  refreshTokenMethod(refreshToken: string): Observable<UserDto | null> {
+  const refreshTokenData: RefreshTokenDto = { refreshToken };
+  
+  return this.http.post<UserDto>(`${this.baseUrl}/refresh-token`, refreshTokenData)
+    .pipe(
+      map(response => {
+        if (response && response.token) {
+          this.setCurrentUser(response);
+          return response;
+        }
+        return null;
+      }),
+      catchError(error => {
+        // If refresh fails, clear user data
+        this.clearUserData();
+        return this.handleError<UserDto | null>('refreshToken', null)(error);
+      })
+    );
+}
 
   googleSignIn(googleData: GoogleSignInVM): Observable<UserDto | null> {
     this.loadingSignal.set(true);
@@ -250,6 +268,8 @@ export class AccountService {
       );
   }
 
+
+  
   updateUserAddress(address: Address): Observable<Address | null> {
     this.loadingSignal.set(true);
     return this.http.put<Address>(`${this.baseUrl}/address`, address)

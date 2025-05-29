@@ -1,185 +1,322 @@
-<div class="container mt-5">
-  <mat-card class="register-card">
-    <mat-card-header>
-      <mat-card-title class="text-center w-100">Create Account</mat-card-title>
-      <mat-card-subtitle class="text-center w-100">Join us today and get started</mat-card-subtitle>
-    </mat-card-header>
+<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-light">
+  <div class="row w-100 justify-content-center">
+    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
+      <mat-card class="register-card shadow-lg border-0" style="border-radius: 16px;">
+        <mat-card-header class="text-center pb-0">
+          <div class="w-100">
+            <div class="mb-3">
+              <mat-icon class="display-4 text-primary">person_add</mat-icon>
+            </div>
+            <mat-card-title class="h3 fw-bold text-dark mb-2">Create Account</mat-card-title>
+            <mat-card-subtitle class="text-muted fs-6">Join us today and get started</mat-card-subtitle>
+          </div>
+        </mat-card-header>
 
-    <mat-card-content>
-      <form [formGroup]="registerForm" (ngSubmit)="submit()" class="register-form">
-        <div class="row">
-          <div class="col-md-6 mb-3">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>First Name</mat-label>
-              <input
-                matInput
-                id="firstName"
-                type="text"
-                formControlName="firstName"
-                autocomplete="given-name"
-              />
-              <mat-icon matSuffix>person</mat-icon>
-              <mat-error *ngIf="firstName?.invalid && firstName?.touched">
-                <span *ngIf="firstName?.errors?.['required']">First name is required.</span>
-                <span *ngIf="firstName?.errors?.['minlength']">First name must be at least 2 characters.</span>
-              </mat-error>
-            </mat-form-field>
+        <mat-card-content class="px-4 py-3">
+          <form [formGroup]="registerForm" (ngSubmit)="submit()" class="register-form">
+            <!-- Name Fields Row -->
+            <div class="row mb-4">
+              <div class="col-md-6 mb-3 mb-md-0">
+                <mat-form-field appearance="outline" class="w-100 custom-form-field">
+                  <mat-label class="fw-medium">First Name</mat-label>
+                  <input
+                    matInput
+                    id="firstName"
+                    type="text"
+                    formControlName="firstName"
+                    autocomplete="given-name"
+                    placeholder="Enter your first name"
+                  />
+                  <mat-icon matSuffix class="text-muted">person</mat-icon>
+                  @if (firstName?.invalid && firstName?.touched) {
+                    <mat-error>
+                      @if (firstName?.errors?.['required']) {
+                        <span class="d-flex align-items-center">
+                          <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                          First name is required
+                        </span>
+                      }
+                      @if (firstName?.errors?.['minlength']) {
+                        <span class="d-flex align-items-center">
+                          <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                          Must be at least 2 characters
+                        </span>
+                      }
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+
+              <div class="col-md-6">
+                <mat-form-field appearance="outline" class="w-100 custom-form-field">
+                  <mat-label class="fw-medium">Last Name</mat-label>
+                  <input
+                    matInput
+                    id="lastName"
+                    type="text"
+                    formControlName="lastName"
+                    autocomplete="family-name"
+                    placeholder="Enter your last name"
+                  />
+                  <mat-icon matSuffix class="text-muted">person</mat-icon>
+                  @if (lastName?.invalid && lastName?.touched) {
+                    <mat-error>
+                      @if (lastName?.errors?.['required']) {
+                        <span class="d-flex align-items-center">
+                          <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                          Last name is required
+                        </span>
+                      }
+                      @if (lastName?.errors?.['minlength']) {
+                        <span class="d-flex align-items-center">
+                          <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                          Must be at least 2 characters
+                        </span>
+                      }
+                    </mat-error>
+                  }
+                </mat-form-field>
+              </div>
+            </div>
+
+            <!-- Email Field -->
+            <div class="mb-4">
+              <mat-form-field appearance="outline" class="w-100 custom-form-field">
+                <mat-label class="fw-medium">Email Address</mat-label>
+                <input
+                  matInput
+                  id="email"
+                  type="email"
+                  formControlName="email"
+                  autocomplete="email"
+                  placeholder="Enter your email address"
+                />
+                <mat-icon matSuffix class="text-muted">email</mat-icon>
+                @if (email?.invalid && email?.touched) {
+                  <mat-error>
+                    @if (email?.errors?.['required']) {
+                      <span class="d-flex align-items-center">
+                        <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                        Email is required
+                      </span>
+                    }
+                    @if (email?.errors?.['email']) {
+                      <span class="d-flex align-items-center">
+                        <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                        Please enter a valid email address
+                      </span>
+                    }
+                  </mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <!-- Password Field -->
+            <div class="mb-4">
+              <mat-form-field appearance="outline" class="w-100 custom-form-field">
+                <mat-label class="fw-medium">Password</mat-label>
+                <input
+                  matInput
+                  id="password"
+                  [type]="hidePassword ? 'password' : 'text'"
+                  formControlName="password"
+                  autocomplete="new-password"
+                  placeholder="Create a strong password"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  (click)="togglePasswordVisibility()"
+                  [attr.aria-label]="'Toggle password visibility'"
+                  [attr.aria-pressed]="!hidePassword"
+                  class="password-toggle-btn"
+                >
+                  <mat-icon class="text-muted">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                @if (password?.invalid && password?.touched) {
+                  <mat-error>
+                    @if (password?.errors?.['required']) {
+                      <span class="d-flex align-items-center">
+                        <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                        Password is required
+                      </span>
+                    }
+                    @if (password?.errors?.['minlength']) {
+                      <span class="d-flex align-items-center">
+                        <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                        Password must be at least 8 characters
+                      </span>
+                    }
+                    @if (password?.errors?.['pattern']) {
+                      <span class="d-flex align-items-center">
+                        <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                        Password must contain uppercase, lowercase, number & special character
+                      </span>
+                    }
+                  </mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="mb-4">
+              <mat-form-field appearance="outline" class="w-100 custom-form-field">
+                <mat-label class="fw-medium">Confirm Password</mat-label>
+                <input
+                  matInput
+                  id="confirmPassword"
+                  [type]="hideConfirmPassword ? 'password' : 'text'"
+                  formControlName="confirmPassword"
+                  autocomplete="new-password"
+                  placeholder="Confirm your password"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  (click)="toggleConfirmPasswordVisibility()"
+                  [attr.aria-label]="'Toggle confirm password visibility'"
+                  [attr.aria-pressed]="!hideConfirmPassword"
+                  class="password-toggle-btn"
+                >
+                  <mat-icon class="text-muted">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+                @if (confirmPassword?.invalid && confirmPassword?.touched) {
+                  <mat-error>
+                    @if (confirmPassword?.errors?.['required']) {
+                      <span class="d-flex align-items-center">
+                        <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                        Please confirm your password
+                      </span>
+                    }
+                  </mat-error>
+                }
+                @if (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
+                  <mat-error>
+                    <span class="d-flex align-items-center">
+                      <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                      Passwords do not match
+                    </span>
+                  </mat-error>
+                }
+              </mat-form-field>
+            </div>
+
+            <!-- Terms and Conditions -->
+            <div class="mb-4">
+              <div class="d-flex align-items-start">
+                <mat-checkbox 
+                  formControlName="agreeToTerms" 
+                  color="primary"
+                  class="me-2 mt-1"
+                >
+                </mat-checkbox>
+                <div class="flex-grow-1">
+                  <label class="form-check-label small text-muted lh-sm">
+                    I agree to the 
+                    <a href="/terms" target="_blank" class="text-primary fw-medium hover-underline">Terms of Service</a> 
+                    and 
+                    <a href="/privacy" target="_blank" class="text-primary fw-medium hover-underline">Privacy Policy</a>
+                  </label>
+                </div>
+              </div>
+              @if (agreeToTerms?.invalid && agreeToTerms?.touched) {
+                <div class="text-danger small mt-2 d-flex align-items-center">
+                  <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
+                  You must agree to the terms and conditions
+                </div>
+              }
+            </div>
+
+            <!-- Error Message -->
+            @if (errorMessage) {
+              <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+                <mat-icon class="me-2">warning</mat-icon>
+                <span>{{ errorMessage }}</span>
+              </div>
+            }
+
+            <!-- Register Button -->
+            <div class="d-grid mb-4">
+              <button
+                mat-raised-button
+                color="primary"
+                type="submit"
+                class="py-3 fw-medium fs-6"
+                style="border-radius: 12px; height: 48px;"
+                [disabled]="loading()"
+              >
+                @if (!loading()) {
+                  <span class="d-flex align-items-center justify-content-center">
+                    <mat-icon class="me-2">person_add</mat-icon>
+                    Create Account
+                  </span>
+                } @else {
+                  <div class="d-flex align-items-center justify-content-center">
+                    <mat-spinner diameter="20" class="me-2"></mat-spinner>
+                    <span>Creating account...</span>
+                  </div>
+                }
+              </button>
+            </div>
+          </form>
+
+          <!-- Divider -->
+          <div class="position-relative text-center mb-4">
+            <hr class="my-4">
+            <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted small fw-medium">
+              OR SIGN UP WITH
+            </span>
           </div>
 
-          <div class="col-md-6 mb-3">
-            <mat-form-field appearance="outline" class="w-100">
-              <mat-label>Last Name</mat-label>
-              <input
-                matInput
-                id="lastName"
-                type="text"
-                formControlName="lastName"
-                autocomplete="family-name"
-              />
-              <mat-icon matSuffix>person</mat-icon>
-              <mat-error *ngIf="lastName?.invalid && lastName?.touched">
-                <span *ngIf="lastName?.errors?.['required']">Last name is required.</span>
-                <span *ngIf="lastName?.errors?.['minlength']">Last name must be at least 2 characters.</span>
-              </mat-error>
-            </mat-form-field>
-          </div>
-        </div>
-
-        <div class="mb-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Email</mat-label>
-            <input
-              matInput
-              id="email"
-              type="email"
-              formControlName="email"
-              autocomplete="email"
-            />
-            <mat-icon matSuffix>email</mat-icon>
-            <mat-error *ngIf="email?.invalid && email?.touched">
-              <span *ngIf="email?.errors?.['required']">Email is required.</span>
-              <span *ngIf="email?.errors?.['email']">Enter a valid email address.</span>
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="mb-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Password</mat-label>
-            <input
-              matInput
-              id="password"
-              [type]="hidePassword ? 'password' : 'text'"
-              formControlName="password"
-              autocomplete="new-password"
-            />
+          <!-- Social Login -->
+          <div class="social-login d-grid gap-3">
             <button
-              mat-icon-button
-              matSuffix
-              type="button"
-              (click)="togglePasswordVisibility()"
-              [attr.aria-label]="'Hide password'"
-              [attr.aria-pressed]="hidePassword"
+              mat-stroked-button
+              (click)="googleSignIn()"
+              [disabled]="loading() || !googleLoaded()"
+              class="social-btn google py-3 d-flex align-items-center justify-content-center"
+              style="border-radius: 12px; height: 48px; border: 2px solid #dc4e41;"
             >
-              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <img src="assets/google-icon.svg" alt="Google" class="me-3" width="20" height="20" />
+              @if (googleLoaded()) {
+                <span class="fw-medium">Continue with Google</span>
+              } @else {
+                <span class="fw-medium">Loading Google...</span>
+              }
             </button>
-            <mat-error *ngIf="password?.invalid && password?.touched">
-              <span *ngIf="password?.errors?.['required']">Password is required.</span>
-              <span *ngIf="password?.errors?.['minlength']">Password must be at least 8 characters.</span>
-              <span *ngIf="password?.errors?.['pattern']">
-                Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
-              </span>
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="mb-3">
-          <mat-form-field appearance="outline" class="w-100">
-            <mat-label>Confirm Password</mat-label>
-            <input
-              matInput
-              id="confirmPassword"
-              [type]="hideConfirmPassword ? 'password' : 'text'"
-              formControlName="confirmPassword"
-              autocomplete="new-password"
-            />
+            
             <button
-              mat-icon-button
-              matSuffix
-              type="button"
-              (click)="toggleConfirmPasswordVisibility()"
-              [attr.aria-label]="'Hide password'"
-              [attr.aria-pressed]="hideConfirmPassword"
+              mat-stroked-button
+              (click)="facebookSignIn()"
+              [disabled]="loading() || !facebookLoaded()"
+              class="social-btn facebook py-3 d-flex align-items-center justify-content-center"
+              style="border-radius: 12px; height: 48px; border: 2px solid #1877f2;"
             >
-              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+              <img src="assets/facebook-icon.svg" alt="Facebook" class="me-3" width="20" height="20" />
+              @if (facebookLoaded()) {
+                <span class="fw-medium">Continue with Facebook</span>
+              } @else {
+                <span class="fw-medium">Loading Facebook...</span>
+              }
             </button>
-            <mat-error *ngIf="confirmPassword?.invalid && confirmPassword?.touched">
-              <span *ngIf="confirmPassword?.errors?.['required']">Please confirm your password.</span>
-            </mat-error>
-            <mat-error *ngIf="registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched">
-              Passwords do not match.
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="mb-4">
-          <mat-checkbox formControlName="agreeToTerms" color="primary">
-            I agree to the <a href="/terms" target="_blank" class="text-primary">Terms of Service</a> 
-            and <a href="/privacy" target="_blank" class="text-primary">Privacy Policy</a>
-          </mat-checkbox>
-          <div *ngIf="agreeToTerms?.invalid && agreeToTerms?.touched" class="text-danger small mt-1">
-            You must agree to the terms and conditions.
           </div>
-        </div>
+        </mat-card-content>
 
-        <div *ngIf="errorMessage" class="text-danger mb-3 text-center">{{ errorMessage }}</div>
-
-        <button
-          mat-raised-button
-          color="primary"
-          type="submit"
-          class="w-100 py-2"
-          [disabled]="loading()"
-        >
-          <span *ngIf="!loading()">Create Account</span>
-          <mat-spinner *ngIf="loading()" diameter="24" class="mx-auto"></mat-spinner>
-        </button>
-      </form>
-
-      <div class="divider d-flex align-items-center my-4">
-        <p class="text-center mx-3 mb-0">OR</p>
-      </div>
-
-      <div class="social-login d-flex flex-column gap-2">
-        <button
-          mat-stroked-button
-          (click)="googleSignIn()"
-          [disabled]="loading() || !googleLoaded()"
-          class="social-btn google"
-        >
-          <img src="assets/google-icon.svg" alt="Google" class="me-2" width="20" />
-          <span *ngIf="googleLoaded(); else googleLoading">Sign up with Google</span>
-          <ng-template #googleLoading>Loading Google...</ng-template>
-        </button>
-        <button
-          mat-stroked-button
-          (click)="facebookSignIn()"
-          [disabled]="loading() || !facebookLoaded()"
-          class="social-btn facebook"
-        >
-          <img src="assets/facebook-icon.svg" alt="Facebook" class="me-2" width="20" />
-          <span *ngIf="facebookLoaded(); else facebookLoading">Sign up with Facebook</span>
-          <ng-template #facebookLoading>Loading Facebook...</ng-template>
-        </button>
-      </div>
-    </mat-card-content>
-
-    <mat-card-footer class="text-center mt-3">
-      <p class="mb-0">
-        <a style="cursor:pointer" (click)="navigateToLogin()" class="text-decoration-underline text-primary">
-          Already have an account? Sign in
-        </a>
-      </p>
-    </mat-card-footer>
-  </mat-card>
+        <mat-card-footer class="text-center pt-3 pb-4">
+          <p class="mb-0">
+            <span class="text-muted me-1">Already have an account?</span>
+            <a 
+              style="cursor: pointer;" 
+              (click)="navigateToLogin()" 
+              class="text-primary fw-medium text-decoration-none hover-underline"
+            >
+              Sign in here
+            </a>
+          </p>
+        </mat-card-footer>
+      </mat-card>
+    </div>
+  </div>
 </div>

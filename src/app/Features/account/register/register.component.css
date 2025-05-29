@@ -1,7 +1,102 @@
-mat-form-field {
-  display: block;
-}
-
-button[mat-raised-button] {
-  margin-top: 10px;
-}
+.register-card {
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  }
+  
+  .register-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+  }
+  
+  .custom-form-field {
+    font-size: 14px;
+  }
+  
+  .custom-form-field .mat-mdc-form-field-subscript-wrapper {
+    margin-top: 4px;
+  }
+  
+  .password-toggle-btn {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .password-toggle-btn:hover {
+    background-color: rgba(0,0,0,0.04);
+  }
+  
+  .social-btn {
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .social-btn.google:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(220, 78, 65, 0.2);
+    border-color: #dc4e41 !important;
+    background-color: rgba(220, 78, 65, 0.02);
+  }
+  
+  .social-btn.facebook:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(24, 119, 242, 0.2);
+    border-color: #1877f2 !important;
+    background-color: rgba(24, 119, 242, 0.02);
+  }
+  
+  .social-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+  
+  .mat-mdc-raised-button:not(:disabled) {
+    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+  }
+  
+  .mat-mdc-raised-button:hover:not(:disabled) {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.16);
+    transform: translateY(-1px);
+  }
+  
+  .alert {
+    border-radius: 8px;
+    border: none;
+    font-size: 14px;
+  }
+  
+  .hover-underline {
+    transition: text-decoration 0.2s ease-in-out;
+  }
+  
+  .hover-underline:hover {
+    text-decoration: underline !important;
+  }
+  
+  .mat-mdc-checkbox {
+    --mdc-checkbox-state-layer-size: 40px;
+  }
+  
+  @media (max-width: 768px) {
+    .row.mb-4 .col-md-6 {
+      margin-bottom: 1rem;
+    }
+    
+    .row.mb-4 .col-md-6:last-child {
+      margin-bottom: 0;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    .container-fluid {
+      padding: 1rem;
+    }
+    
+    .register-card {
+      margin: 0.5rem;
+    }
+    
+    .mat-mdc-card-content {
+      padding: 1rem !important;
+    }
+    
+    .row.mb-4 .col-md-6 {
+      margin-bottom: 1rem;
+    }
+  }

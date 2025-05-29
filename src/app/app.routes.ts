@@ -8,8 +8,8 @@ import { ServerErrorComponent } from './Shared/components/server-error/server-er
 import { CartComponent } from './Features/cart/cart.component';
 import { CheckoutComponent } from './Features/checkout/checkout.component';
 import { LoginComponent } from './Features/account/login/login.component';
-import { registerLocaleData } from '@angular/common';
 import { RegisterComponent } from './Features/account/register/register.component';
+import { authGuard } from './Core/guards/auth.guard';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -19,7 +19,7 @@ export const routes: Routes = [
     {path: 'not-found', component: NotFoundComponent},
     {path: 'server-error', component: ServerErrorComponent},
     {path: 'cart', component: CartComponent},
-    {path: 'checkout', component: CheckoutComponent},
+    {path: 'checkout', component: CheckoutComponent,canActivate: [authGuard]},
     {path: 'account/login', component: LoginComponent},
     {path: 'account/register', component: RegisterComponent},
     {path: '**',redirectTo:'not-found' ,pathMatch:'full'}

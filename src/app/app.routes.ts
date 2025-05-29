@@ -7,6 +7,9 @@ import { NotFoundComponent } from './Shared/components/not-found/not-found.compo
 import { ServerErrorComponent } from './Shared/components/server-error/server-error.component';
 import { CartComponent } from './Features/cart/cart.component';
 import { CheckoutComponent } from './Features/checkout/checkout.component';
+import { LoginComponent } from './Features/account/login/login.component';
+import { registerLocaleData } from '@angular/common';
+import { RegisterComponent } from './Features/account/register/register.component';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -17,5 +20,7 @@ export const routes: Routes = [
     {path: 'server-error', component: ServerErrorComponent},
     {path: 'cart', component: CartComponent},
     {path: 'checkout', component: CheckoutComponent},
+    {path: 'account/login', component: LoginComponent},
+    {path: 'account/register', component: RegisterComponent},
     {path: '**',redirectTo:'not-found' ,pathMatch:'full'}
 ];

@@ -1,0 +1,78 @@
+/* Login container */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 20px;
+}
+
+/* Card styling */
+.login-card {
+  width: 100%;
+  max-width: 450px;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styling */
+.login-form {
+  margin-top: 1.5rem;
+}
+
+/* Divider styling */
+.divider {
+  color: #6c757d;
+}
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #dee2e6;
+}
+
+/* Social buttons */
+.social-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.social-btn.google {
+  border-color: #db4437;
+  color: #db4437;
+}
+
+.social-btn.google:hover {
+  background-color: rgba(219, 68, 55, 0.04);
+}
+
+.social-btn.facebook {
+  border-color: #4267B2;
+  color: #4267B2;
+}
+
+.social-btn.facebook:hover {
+  background-color: rgba(66, 103, 178, 0.04);
+}
+
+/* Error snackbar */
+.error-snackbar {
+  background-color: #f44336;
+  color: white;
+  border-radius: 4px;
+  padding: 14px 24px;
+  margin-top: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+  .login-card {
+    padding: 1.5rem;
+  }
+}

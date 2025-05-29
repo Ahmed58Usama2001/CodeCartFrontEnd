@@ -1,0 +1,185 @@
+<div class="container mt-5">
+  <mat-card class="register-card">
+    <mat-card-header>
+      <mat-card-title class="text-center w-100">Create Account</mat-card-title>
+      <mat-card-subtitle class="text-center w-100">Join us today and get started</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="submit()" class="register-form">
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>First Name</mat-label>
+              <input
+                matInput
+                id="firstName"
+                type="text"
+                formControlName="firstName"
+                autocomplete="given-name"
+              />
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="firstName?.invalid && firstName?.touched">
+                <span *ngIf="firstName?.errors?.['required']">First name is required.</span>
+                <span *ngIf="firstName?.errors?.['minlength']">First name must be at least 2 characters.</span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-6 mb-3">
+            <mat-form-field appearance="outline" class="w-100">
+              <mat-label>Last Name</mat-label>
+              <input
+                matInput
+                id="lastName"
+                type="text"
+                formControlName="lastName"
+                autocomplete="family-name"
+              />
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="lastName?.invalid && lastName?.touched">
+                <span *ngIf="lastName?.errors?.['required']">Last name is required.</span>
+                <span *ngIf="lastName?.errors?.['minlength']">Last name must be at least 2 characters.</span>
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Email</mat-label>
+            <input
+              matInput
+              id="email"
+              type="email"
+              formControlName="email"
+              autocomplete="email"
+            />
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="email?.invalid && email?.touched">
+              <span *ngIf="email?.errors?.['required']">Email is required.</span>
+              <span *ngIf="email?.errors?.['email']">Enter a valid email address.</span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Password</mat-label>
+            <input
+              matInput
+              id="password"
+              [type]="hidePassword ? 'password' : 'text'"
+              formControlName="password"
+              autocomplete="new-password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hidePassword"
+            >
+              <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="password?.invalid && password?.touched">
+              <span *ngIf="password?.errors?.['required']">Password is required.</span>
+              <span *ngIf="password?.errors?.['minlength']">Password must be at least 8 characters.</span>
+              <span *ngIf="password?.errors?.['pattern']">
+                Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+              </span>
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Confirm Password</mat-label>
+            <input
+              matInput
+              id="confirmPassword"
+              [type]="hideConfirmPassword ? 'password' : 'text'"
+              formControlName="confirmPassword"
+              autocomplete="new-password"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="toggleConfirmPasswordVisibility()"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hideConfirmPassword"
+            >
+              <mat-icon>{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+            <mat-error *ngIf="confirmPassword?.invalid && confirmPassword?.touched">
+              <span *ngIf="confirmPassword?.errors?.['required']">Please confirm your password.</span>
+            </mat-error>
+            <mat-error *ngIf="registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched">
+              Passwords do not match.
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="mb-4">
+          <mat-checkbox formControlName="agreeToTerms" color="primary">
+            I agree to the <a href="/terms" target="_blank" class="text-primary">Terms of Service</a> 
+            and <a href="/privacy" target="_blank" class="text-primary">Privacy Policy</a>
+          </mat-checkbox>
+          <div *ngIf="agreeToTerms?.invalid && agreeToTerms?.touched" class="text-danger small mt-1">
+            You must agree to the terms and conditions.
+          </div>
+        </div>
+
+        <div *ngIf="errorMessage" class="text-danger mb-3 text-center">{{ errorMessage }}</div>
+
+        <button
+          mat-raised-button
+          color="primary"
+          type="submit"
+          class="w-100 py-2"
+          [disabled]="loading()"
+        >
+          <span *ngIf="!loading()">Create Account</span>
+          <mat-spinner *ngIf="loading()" diameter="24" class="mx-auto"></mat-spinner>
+        </button>
+      </form>
+
+      <div class="divider d-flex align-items-center my-4">
+        <p class="text-center mx-3 mb-0">OR</p>
+      </div>
+
+      <div class="social-login d-flex flex-column gap-2">
+        <button
+          mat-stroked-button
+          (click)="googleSignIn()"
+          [disabled]="loading() || !googleLoaded()"
+          class="social-btn google"
+        >
+          <img src="assets/google-icon.svg" alt="Google" class="me-2" width="20" />
+          <span *ngIf="googleLoaded(); else googleLoading">Sign up with Google</span>
+          <ng-template #googleLoading>Loading Google...</ng-template>
+        </button>
+        <button
+          mat-stroked-button
+          (click)="facebookSignIn()"
+          [disabled]="loading() || !facebookLoaded()"
+          class="social-btn facebook"
+        >
+          <img src="assets/facebook-icon.svg" alt="Facebook" class="me-2" width="20" />
+          <span *ngIf="facebookLoaded(); else facebookLoading">Sign up with Facebook</span>
+          <ng-template #facebookLoading>Loading Facebook...</ng-template>
+        </button>
+      </div>
+    </mat-card-content>
+
+    <mat-card-footer class="text-center mt-3">
+      <p class="mb-0">
+        <a style="cursor:pointer" (click)="navigateToLogin()" class="text-decoration-underline text-primary">
+          Already have an account? Sign in
+        </a>
+      </p>
+    </mat-card-footer>
+  </mat-card>
+</div>

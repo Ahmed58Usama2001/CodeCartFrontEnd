@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { Cart, CartItem } from '../../Shared/models/Cart';
 import { Product } from '../../Shared/models/Product';
 import { map, tap } from 'rxjs';
+import { DeliveryMethod } from '../../Shared/models/deliveryMethod';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,7 @@ export class CartService {
 
   private http = inject(HttpClient);
 
+  selectedDeliveryMethod = signal<DeliveryMethod | null>(null);
   cart = signal<Cart | null>(null);
   itemsCount = computed(() => {
     const cart = this.cart();
@@ -57,7 +59,6 @@ export class CartService {
     });
   }
 
-  // Clear cart from service (used during logout)
   clearCart() {
     this.cart.set(null);
   }
@@ -97,7 +98,6 @@ export class CartService {
   }
 
   private updateCartStorage(cartId: string) {
-    // Get current user from localStorage directly to avoid circular dependency
     const userStr = localStorage.getItem('user');
     let currentUser = null;
     
@@ -110,18 +110,14 @@ export class CartService {
     }
     
     if (currentUser?.email) {
-      // User is logged in - save to user-specific key
-      localStorage.setItem(`cart_${currentUser.email}`, cartId);
-      // Remove anonymous cart if exists
+     localStorage.setItem(`cart_${currentUser.email}`, cartId);
       localStorage.removeItem('cart_id');
     } else {
-      // Anonymous user - save to general key
       localStorage.setItem('cart_id', cartId);
     }
   }
 
   private removeCartFromStorage() {
-    // Get current user from localStorage directly to avoid circular dependency
     const userStr = localStorage.getItem('user');
     let currentUser = null;
     

@@ -1,1 +1,93 @@
-<p>checkout-delivery works!</p>
+<div class="delivery-methods-container">
+  <div class="row">
+    <div class="col-12">
+      <div class="d-flex align-items-center mb-4">
+        <mat-icon class="text-primary me-2">local_shipping</mat-icon>
+        <h5 class="mb-0 fw-semibold">Choose Delivery Method</h5>
+      </div>
+      
+      <mat-radio-group 
+        [(ngModel)]="selectedDeliveryMethod" 
+        class="delivery-radio-group w-100"
+        (change)="onDeliveryMethodChange($event)">
+        
+        <div class="row g-3">
+          <div class="col-12" *ngFor="let method of deliveryMethods">
+            <div class="card delivery-method-card h-100" 
+                 [class.selected]="selectedDeliveryMethod === method.id">
+              <div class="card-body p-3">
+                <mat-radio-button 
+                  [value]="method.id" 
+                  class="w-100 delivery-radio-button">
+                  <div class="delivery-method-content d-flex justify-content-between align-items-start w-100 ms-3">
+                    <!-- Left side content -->
+                    <div class="delivery-info flex-grow-1">
+                      <div class="d-flex align-items-center mb-2">
+                        <h6 class="mb-0 fw-bold text-dark">{{ method.shortName }}</h6>
+                        <span class="badge bg-light text-dark ms-2 px-2 py-1">
+                          <mat-icon class="small-icon me-1">schedule</mat-icon>
+                          {{ method.deliveryTime }}
+                        </span>
+                      </div>
+                      <p class="text-muted mb-0 small">{{ method.description }}</p>
+                    </div>
+                    
+                    <!-- Right side price -->
+                    <div class="delivery-price ms-3">
+                      <span class="h6 mb-0 fw-bold text-primary" 
+                            *ngIf="method.price > 0">
+                        £{{ method.price | number:'1.2-2' }}
+                      </span>
+                      <span class="h6 mb-0 fw-bold text-success" 
+                            *ngIf="method.price === 0">
+                        FREE
+                      </span>
+                    </div>
+                  </div>
+                </mat-radio-button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-radio-group>
+      
+      <!-- Loading state -->
+      <div *ngIf="!deliveryMethods || deliveryMethods.length === 0" 
+           class="text-center py-4">
+        <mat-spinner diameter="40" class="mx-auto mb-3"></mat-spinner>
+        <p class="text-muted mb-0">Loading delivery methods...</p>
+      </div>
+      
+      <!-- Error state -->
+      <div *ngIf="error" class="alert alert-danger d-flex align-items-center" role="alert">
+        <mat-icon class="me-2">error</mat-icon>
+        <div>
+          <strong>Error:</strong> {{ error }}
+        </div>
+      </div>
+      
+      <!-- Selected method summary -->
+      <div *ngIf="selectedDeliveryMethod && getSelectedMethod()" 
+           class="mt-4 p-3 bg-light rounded border-start border-primary border-4">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <h6 class="mb-1 fw-semibold">Selected: {{ getSelectedMethod()?.shortName }}</h6>
+            <small class="text-muted">{{ getSelectedMethod()?.description }}</small>
+          </div>
+          <div class="text-end">
+            @if (getSelectedMethod()?.price > 0) {
+                <div class="fw-bold text-primary">
+              £{{ getSelectedMethod()?.price | number:'1.2-2' }}
+            </div>
+            }
+            
+            <div class="fw-bold text-success" *ngIf="getSelectedMethod()?.price === 0">
+              FREE
+            </div>
+            <small class="text-muted">{{ getSelectedMethod()?.deliveryTime }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

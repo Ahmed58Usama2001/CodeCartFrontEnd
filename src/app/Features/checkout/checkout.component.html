@@ -31,7 +31,11 @@
                 <!-- Step 2: Shipping -->
                 <mat-step label="Shipping">
                   <app-checkout-delivery></app-checkout-delivery>
-                  
+                   <div class="d-flex justify-content-between mt-5">
+                    <button mat-stroked-button matStepperPrevious >Back</button>
+                    <button mat-flat-button  matStepperNext >Next</button>
+
+                  </div>
                 </mat-step>
 
                 <!-- Step 3: Payment -->

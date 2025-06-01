@@ -1,0 +1,107 @@
+.delivery-methods-container {
+  width: 100%;
+}
+
+.delivery-radio-group {
+  display: block;
+}
+
+.delivery-method-card {
+  border: 2px solid #e0e0e0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.delivery-method-card:hover {
+  border-color: #2196f3;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+}
+
+.delivery-method-card.selected {
+  border-color: #2196f3;
+  background-color: #f3f8ff;
+  box-shadow: 0 2px 12px rgba(33, 150, 243, 0.2);
+}
+
+.delivery-radio-button {
+  width: 100%;
+  margin: 0;
+}
+
+.delivery-radio-button .mat-radio-container {
+  margin-right: 8px;
+}
+
+.delivery-radio-button .mat-radio-label {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+}
+
+.delivery-method-content {
+  margin-left: 0;
+  width: calc(100% - 20px);
+}
+
+.delivery-info h6 {
+  color: #333;
+  font-size: 1.1rem;
+}
+
+.delivery-price {
+  min-width: 80px;
+  text-align: right;
+}
+
+.small-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.badge {
+  font-size: 0.75rem;
+  border-radius: 12px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .delivery-method-content {
+    flex-direction: column;
+    align-items: flex-start !important;
+  }
+  
+  .delivery-price {
+    margin-top: 8px;
+    margin-left: 0 !important;
+    text-align: left;
+    min-width: auto;
+  }
+  
+  .delivery-info {
+    width: 100%;
+  }
+}
+
+/* Material spinner customization */
+.mat-mdc-progress-spinner {
+  --mdc-circular-progress-active-indicator-color: #2196f3;
+}
+
+/* Alert styling */
+.alert {
+  border-radius: 8px;
+  border: none;
+}
+
+.alert-danger {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* Selected method summary */
+.bg-light {
+  background-color: #f8f9fa !important;
+}

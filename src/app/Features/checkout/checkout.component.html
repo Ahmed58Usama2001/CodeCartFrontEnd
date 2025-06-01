@@ -1,3 +1,4 @@
+<!-- checkout.component.html -->
 <div class="container-fluid py-4">
   <div class="row justify-content-center">
     <div class="col-12 col-xl-10">
@@ -15,37 +16,78 @@
         <div class="col-12 col-lg-8 mb-4">
           <div class="card shadow-sm border-0">
             <div class="card-body p-4">
-              <mat-horizontal-stepper #stepper [linear]="false" >
+              <mat-horizontal-stepper 
+                #stepper 
+                [linear]="false" 
+                (selectionChange)="onStepperSelectionChange($event)">
+                
                 <!-- Step 1: Address -->
-                <mat-step  label="Address">
+                <mat-step label="Address">
                   <div id="address-element">
-
+                    <!-- Address element content -->
                   </div>
                   <div class="d-flex justify-content-between mt-5">
-                    <button mat-stroked-button routerLink="/shop" routerLinkActive="router-link-active" >Continue Shopping</button>
-                    <button mat-flat-button  matStepperNext >Next</button>
-
+                    <button mat-stroked-button routerLink="/shop" routerLinkActive="router-link-active">
+                      Continue Shopping
+                    </button>
+                    <button mat-flat-button matStepperNext>
+                      Next
+                    </button>
                   </div>
                 </mat-step>
 
                 <!-- Step 2: Shipping -->
                 <mat-step label="Shipping">
-                  <app-checkout-delivery></app-checkout-delivery>
-                   <div class="d-flex justify-content-between mt-5">
-                    <button mat-stroked-button matStepperPrevious >Back</button>
-                    <button mat-flat-button  matStepperNext >Next</button>
-
+                  <app-checkout-delivery 
+                    (deliveryMethodSelected)="onDeliveryMethodSelected($event)">
+                  </app-checkout-delivery>
+                  <div class="d-flex justify-content-between mt-5">
+                    <button mat-stroked-button matStepperPrevious>
+                      Back
+                    </button>
+                    <button mat-flat-button matStepperNext>
+                      Next
+                    </button>
                   </div>
                 </mat-step>
 
                 <!-- Step 3: Payment -->
                 <mat-step label="Payment">
-                  
+                  <!-- Payment form content will go here -->
+                  <div class="payment-section">
+                    <div class="d-flex align-items-center mb-4">
+                      <mat-icon class="text-primary me-2">credit_card</mat-icon>
+                      <h5 class="mb-0 fw-semibold">Payment Information</h5>
+                    </div>
+                    <p class="text-muted">Payment form will be implemented here</p>
+                  </div>
+                  <div class="d-flex justify-content-between mt-5">
+                    <button mat-stroked-button matStepperPrevious>
+                      Back
+                    </button>
+                    <button mat-flat-button matStepperNext>
+                      Next
+                    </button>
+                  </div>
                 </mat-step>
 
                 <!-- Step 4: Confirmation -->
                 <mat-step label="Confirmation">
-                  
+                  <div class="confirmation-section">
+                    <div class="d-flex align-items-center mb-4">
+                      <mat-icon class="text-success me-2">check_circle</mat-icon>
+                      <h5 class="mb-0 fw-semibold">Order Confirmation</h5>
+                    </div>
+                    <p class="text-muted">Review your order before completing</p>
+                  </div>
+                  <div class="d-flex justify-content-between mt-5">
+                    <button mat-stroked-button matStepperPrevious>
+                      Back
+                    </button>
+                    <button mat-flat-button color="primary">
+                      Complete Order
+                    </button>
+                  </div>
                 </mat-step>
               </mat-horizontal-stepper>
             </div>
@@ -56,7 +98,6 @@
         <div class="col-12 col-lg-4">
           <app-order-summary
             [subtotal]="subtotal()"
-            [tax]="tax()"
             [shipping]="shipping()"
             [total]="total()"
             [hideCheckoutButton]="true"

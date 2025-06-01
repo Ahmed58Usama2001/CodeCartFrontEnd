@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,25 +28,9 @@ export class CartComponent implements OnInit {
 
   cart = this.cartService.cart;
   itemsCount = this.cartService.itemsCount;
-
-  subtotal = computed(() => {
-    const cart = this.cart();
-    if (!cart || !cart.items) return 0;
-    return cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  });
-
-  tax = computed(() => {
-    return this.subtotal() * 0.08; 
-  });
-
-  shipping = computed(() => {
-    const subtotal = this.subtotal();
-    return subtotal > 0 ? (subtotal > 50 ? 0 : 5.99) : 0; 
-  });
-
-  total = computed(() => {
-    return this.subtotal() + this.tax() + this.shipping();
-  });
+  subtotal = this.cartService.subtotal;
+  shipping = this.cartService.shipping;
+  total = this.cartService.total;
 
   ngOnInit() {
     this.loadCart();

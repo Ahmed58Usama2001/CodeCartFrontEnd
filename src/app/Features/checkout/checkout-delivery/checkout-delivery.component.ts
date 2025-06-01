@@ -1,3 +1,4 @@
+// checkout-delivery.component.ts
 import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
 import { CheckoutService } from '../../../Core/services/checkout.service';
 import { CommonModule } from '@angular/common';
@@ -5,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { CartService } from '../../../Core/services/cart.service';
 
 export interface DeliveryMethod {
   shortName: string;
@@ -16,6 +18,7 @@ export interface DeliveryMethod {
 
 @Component({
   selector: 'app-checkout-delivery',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -28,6 +31,7 @@ export interface DeliveryMethod {
 })
 export class CheckoutDeliveryComponent implements OnInit {
   checkoutService = inject(CheckoutService);
+  cartService = inject(CartService);
   
   deliveryMethods: DeliveryMethod[] = [];
   selectedDeliveryMethod: number | null = null;
@@ -46,6 +50,7 @@ export class CheckoutDeliveryComponent implements OnInit {
         // Auto-select the first method if available
         if (methods.length > 0) {
           this.selectedDeliveryMethod = methods[0].id;
+          // Emit the selected method immediately
           this.deliveryMethodSelected.emit(methods[0]);
         }
       },
@@ -57,13 +62,15 @@ export class CheckoutDeliveryComponent implements OnInit {
   }
 
   onDeliveryMethodChange(event: any): void {
+    console.log('Delivery method changed:', event.value);
     const selectedMethod = this.deliveryMethods.find(method => method.id === event.value);
     if (selectedMethod) {
+      // Emit the selected delivery method to parent component
       this.deliveryMethodSelected.emit(selectedMethod);
     }
   }
 
-  getSelectedMethod(): DeliveryMethod |any {
+  getSelectedMethod(): DeliveryMethod | undefined {
     return this.deliveryMethods.find(method => method.id === this.selectedDeliveryMethod);
   }
 }

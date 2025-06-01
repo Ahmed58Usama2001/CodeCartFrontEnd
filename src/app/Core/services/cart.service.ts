@@ -1,3 +1,4 @@
+// cart.service.ts
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
@@ -17,10 +18,35 @@ export class CartService {
 
   selectedDeliveryMethod = signal<DeliveryMethod | null>(null);
   cart = signal<Cart | null>(null);
+  
   itemsCount = computed(() => {
     const cart = this.cart();
     if (!cart || !cart.items) return 0;
     return cart.items.reduce((sum, item) => sum + item.quantity, 0);
+  });
+
+  subtotal = computed(() => {
+    const cart = this.cart();
+    if (!cart || !cart.items) return 0;
+    return cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  });
+
+
+
+  // Updated shipping computation to use selected delivery method
+  shipping = computed(() => {
+    const selectedMethod = this.selectedDeliveryMethod();
+    if (selectedMethod) {
+      return selectedMethod.price;
+    }
+    
+    // Fallback logic if no delivery method is selected
+    const subtotal = this.subtotal();
+    return subtotal > 0 ? (subtotal > 50 ? 0 : 5.99) : 0;
+  });
+
+  total = computed(() => {
+    return this.subtotal() +this.shipping();
   });
 
   getCart(id: string) {
@@ -44,6 +70,23 @@ export class CartService {
     });
   }
 
+  // Method to update delivery method in cart on backend
+  updateCartDeliveryMethod(deliveryMethodId: number) {
+    const cart = this.cart();
+    if (!cart) {
+      throw new Error('No cart available to update');
+    }
+
+    // Update the cart with the new delivery method ID
+    cart.deliveryMethodId = deliveryMethodId;
+    
+    return this.http.post<Cart>(this.baseUrl + 'cart', cart).pipe(
+      tap(updatedCart => {
+        this.cart.set(updatedCart);
+      })
+    );
+  }
+
   deleteCart() {
     const cartId = this.cart()?.id;
     if (!cartId) return;
@@ -51,6 +94,7 @@ export class CartService {
     return this.http.delete(this.baseUrl + 'cart?id=' + cartId).subscribe({
       next: () => {
         this.cart.set(null);
+        this.selectedDeliveryMethod.set(null);
         this.removeCartFromStorage();
       },
       error: (error) => {
@@ -61,6 +105,14 @@ export class CartService {
 
   clearCart() {
     this.cart.set(null);
+    this.selectedDeliveryMethod.set(null);
+  }
+
+  // Method to set delivery method - this will trigger shipping computation update
+  setDeliveryMethod(method: DeliveryMethod) {
+    console.log('Setting delivery method:', method);
+    this.selectedDeliveryMethod.set(method);
+    // The shipping computed value will automatically update
   }
 
   addItemToCart(item: CartItem | Product, quantity: number = 1) {

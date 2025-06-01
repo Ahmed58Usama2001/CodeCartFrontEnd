@@ -1,84 +1,100 @@
-import { Component, computed, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatStepper } from '@angular/material/stepper';
+// checkout.component.ts
+import { Component, ViewChild, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatStepperModule } from '@angular/material/stepper';
+import { MatStepperModule, MatStepper } from '@angular/material/stepper';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatButton, MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { RouterModule } from '@angular/router';
+
 import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery.component';
 import { OrderSummaryComponent } from '../../Shared/components/order-summary/order-summary.component';
-import { StripeAddressElement } from '@stripe/stripe-js';
 import { CartService } from '../../Core/services/cart.service';
-import { SnackbarService } from '../../Core/services/snackbar.service';
 import { StripeService } from '../../Core/services/stripe.service';
-import { RouterLink } from '@angular/router';
+
+export interface DeliveryMethod {
+  shortName: string;
+  deliveryTime: string;
+  description: string;
+  price: number;
+  id: number;
+}
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
   imports: [
     CommonModule,
-    ReactiveFormsModule,
     MatStepperModule,
-    MatIconModule,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
+    MatIconModule,
+    RouterModule,
     CheckoutDeliveryComponent,
-    OrderSummaryComponent,MatButton,
-    RouterLink
+    OrderSummaryComponent
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
 })
-export class CheckoutComponent implements OnInit, OnDestroy {
-
+export class CheckoutComponent implements OnInit {
+  @ViewChild('stepper') stepper!: MatStepper;
+  
+  private cartService = inject(CartService);
   private stripeService = inject(StripeService);
-  private snackBarService = inject(SnackbarService);
-    private cartService = inject(CartService);
-  cart = this.cartService.cart;
-subtotal = computed(() => {
-    const cart = this.cart();
-    if (!cart || !cart.items) return 0;
-    return cart.items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  });
+  
+  // Computed values from cart service - these will update automatically
+  subtotal = this.cartService.subtotal;
+  shipping = this.cartService.shipping;
+  total = this.cartService.total;
 
-  tax = computed(() => {
-    return this.subtotal() * 0.08; 
-  });
+  ngOnInit() {
+    // Payment intent is already initialized when entering checkout (for address step)
+    console.log('Checkout component initialized');
+  }
 
-  shipping = computed(() => {
-    const subtotal = this.subtotal();
-    return subtotal > 0 ? (subtotal > 50 ? 0 : 5.99) : 0; 
-  });
+  onDeliveryMethodSelected(deliveryMethod: DeliveryMethod) {
+    console.log('Delivery method selected:', deliveryMethod);
+    
+    // Update the selected delivery method in cart service
+    // This will automatically update the shipping cost in order summary
+    this.cartService.setDeliveryMethod(deliveryMethod);
+    
+    // Update the cart on the backend with the new delivery method
+    this.cartService.updateCartDeliveryMethod(deliveryMethod.id).subscribe({
+      next: (updatedCart) => {
+        console.log('Delivery method updated in cart:', updatedCart);
+      },
+      error: (error) => {
+        console.error('Error updating delivery method:', error);
+      }
+    });
+  }
 
-  total = computed(() => {
-    return this.subtotal() + this.tax() + this.shipping();
-  });
-  addressElement?: StripeAddressElement;
-
-
-
-
-     async ngOnInit() {
-    try {
-      this.addressElement = await this.stripeService.createAddressElement();
-      this.addressElement?.mount('#address-element');
-    } catch (error:any) {
-      this.snackBarService.error(error.message || 'Failed to initialize address element');
+  onStepperSelectionChange(event: any) {
+    const selectedIndex = event.selectedIndex;
+    const previousIndex = event.previouslySelectedIndex;
+    
+    console.log(`Stepper changed from ${previousIndex} to ${selectedIndex}`);
+    
+    // Check if moving from step 1 (Shipping) to step 2 (Payment)
+    if (previousIndex === 1 && selectedIndex === 2) {
+      console.log('Moving from Shipping to Payment - updating payment intent');
+      this.updatePaymentIntent();
     }
   }
-  ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+
+  private updatePaymentIntent() {
+    // Update the payment intent to reflect the new total with shipping
+    this.stripeService.CreateOrUpdatePaymentIntent().subscribe({
+      next: (updatedCart) => {
+        console.log('Payment intent updated successfully:', updatedCart);},
+      error: (error) => {
+        console.error('Error updating payment intent:', error);
+      }
+    });
   }
 
-
-
-    applyPromoCode(promoCode: string) {
-    // Implement promo code logic
-    console.log('Applying promo code:', promoCode);
-    // You can add your promo code validation logic here
+  applyPromoCode(promoCode: string) {
+    // Handle promo code application
+    console.log('Promo code applied:', promoCode);
+    // Add your promo code logic here
   }
 }

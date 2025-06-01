@@ -42,7 +42,7 @@ export class HeaderComponent {
 logout() {
   this.accountService.logout().subscribe({
     next: () => {
-
+      this.router.navigateByUrl('/');
       console.log('Logged out successfully');
     },
     error: (error) => {

@@ -15,9 +15,10 @@ export class StripeService {
   private stripePromise?: Promise<Stripe | null>;
   private http = inject(HttpClient)
   private cartSerice = inject(CartService);
-  private elements ?:StripeElements;
-  private addressElement ?: StripeAddressElement;
+  private elements?: StripeElements;
+  private addressElement?: StripeAddressElement;
   private accountService = inject(AccountService);
+  private paymentIntentCreated = false;
 
   baseurl = environment.apiUrl;
 
@@ -30,13 +31,21 @@ export class StripeService {
   }
 
   async initializeElements() {
-    if(!this.elements){
+    if (!this.elements) {
       const stripe = await this.getStripeInstance();
       if (stripe) {
-        const cart = await firstValueFrom(this.CreateOrUpdatePaymentIntent());
+        // Only create initial payment intent if not already created
+        let cart: Cart;
+        if (!this.paymentIntentCreated) {
+          cart = await firstValueFrom(this.CreateOrUpdatePaymentIntent());
+          this.paymentIntentCreated = true;
+        } else {
+          cart = this.cartSerice.cart()!;
+        }
+        
         this.elements = stripe.elements({
           clientSecret: cart.clientSecret,
-          appearance: {labels: 'floating'}
+          appearance: { labels: 'floating' }
         });
       }
       else {
@@ -48,17 +57,17 @@ export class StripeService {
   }
 
   async createAddressElement() {
-    if(!this.addressElement) {
+    if (!this.addressElement) {
       const elements = await this.initializeElements();
       if (elements) {
         const user = this.accountService.currentUser();
         let defaultValues: StripeAddressElementOptions['defaultValues'] = {};
 
-        if(user){
-          defaultValues.name = user.firstName+ ' ' + user.lastName;
+        if (user) {
+          defaultValues.name = user.firstName + ' ' + user.lastName;
         }
 
-        if(user && user.address){
+        if (user && user.address) {
           defaultValues = {
             ...defaultValues,
             address: {
@@ -72,32 +81,42 @@ export class StripeService {
         }
 
         const options: StripeAddressElementOptions = {
-          mode:'shipping'};
+          mode: 'shipping',
+          defaultValues
+        };
         this.addressElement = elements.create('address', options);
-    }else{
-      throw new Error('Stripe elements not initialized');
+      } else {
+        throw new Error('Stripe elements not initialized');
+      }
     }
-  }
 
     return this.addressElement;
   }
 
-
   CreateOrUpdatePaymentIntent() {
     const cart = this.cartSerice.cart();
 
-    if(!cart) throw new Error('PRoblem with cart');
-    return this.http.post<Cart>(`${this.baseurl}`+'payments/'+cart.id, {}).pipe(
+    if (!cart) throw new Error('Problem with cart');
+    
+    return this.http.post<Cart>(`${this.baseurl}payments/${cart.id}`, {}).pipe(
       map(cart => {
         this.cartSerice.cart.set(cart);
         return cart;
       })
-    )
+    );
   }
 
-  disposeElements(){
+  // Method to update payment intent when totals change
+  async updatePaymentIntentAmount() {
+    if (this.elements && this.paymentIntentCreated) {
+      return this.CreateOrUpdatePaymentIntent();
+    }
+    return null;
+  }
+
+  disposeElements() {
     this.elements = undefined;
     this.addressElement = undefined;
+    this.paymentIntentCreated = false;
   }
-
 }

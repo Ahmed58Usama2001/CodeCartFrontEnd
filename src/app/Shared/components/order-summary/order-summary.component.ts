@@ -1,3 +1,4 @@
+// order-summary.component.ts
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,7 +22,6 @@ import { MatInputModule } from '@angular/material/input';
 export class OrderSummaryComponent {
   @Input() subtotal: number = 0;
   @Input() shipping: number = 0;
-  @Input() tax: number = 0;
   @Input() total: number = 0;
   @Input() hideCheckoutButton: boolean = false;
 

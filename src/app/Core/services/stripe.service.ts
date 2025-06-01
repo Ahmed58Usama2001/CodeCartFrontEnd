@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { loadStripe, Stripe, StripeAddressElement, StripeAddressElementOptions, StripeElements } from '@stripe/stripe-js';
+import { loadStripe, Stripe, StripeAddressElement, StripeAddressElementOptions, StripeElements, StripePaymentElement, StripePaymentElementOptions } from '@stripe/stripe-js';
 import { environment } from '../../../environments/environment.development';
 import { HttpClient } from '@angular/common/http';
 import { CartService } from './cart.service';
@@ -17,6 +17,7 @@ export class StripeService {
   private cartSerice = inject(CartService);
   private elements?: StripeElements;
   private addressElement?: StripeAddressElement;
+  private paymentElement?: StripePaymentElement;
   private accountService = inject(AccountService);
   private paymentIntentCreated = false;
 
@@ -34,6 +35,7 @@ export class StripeService {
     if (!this.elements) {
       const stripe = await this.getStripeInstance();
       if (stripe) {
+        // Only create initial payment intent if not already created
         let cart: Cart;
         if (!this.paymentIntentCreated) {
           cart = await firstValueFrom(this.CreateOrUpdatePaymentIntent());
@@ -92,6 +94,29 @@ export class StripeService {
     return this.addressElement;
   }
 
+  async createPaymentElement(): Promise<StripePaymentElement> {
+    if (!this.paymentElement) {
+      const elements = await this.initializeElements();
+      if (elements) {
+        const options: StripePaymentElementOptions = {
+          layout: 'tabs',
+          defaultValues: {
+            billingDetails: {
+              name: '',
+              email: '',
+            }
+          }
+        };
+        
+        this.paymentElement = elements.create('payment', options);
+      } else {
+        throw new Error('Stripe elements not initialized');
+      }
+    }
+
+    return this.paymentElement;
+  }
+
   CreateOrUpdatePaymentIntent() {
     const cart = this.cartSerice.cart();
 
@@ -105,6 +130,7 @@ export class StripeService {
     );
   }
 
+  // Method to update payment intent when totals change
   async updatePaymentIntentAmount() {
     if (this.elements && this.paymentIntentCreated) {
       return this.CreateOrUpdatePaymentIntent();
@@ -112,9 +138,48 @@ export class StripeService {
     return null;
   }
 
+  // Method to confirm payment
+  async confirmPayment(returnUrl: string) {
+    const stripe = await this.getStripeInstance();
+    if (!stripe || !this.elements) {
+      throw new Error('Stripe not initialized');
+    }
+
+    const { error, paymentIntent } = await stripe.confirmPayment({
+      elements: this.elements,
+      redirect: 'if_required',
+      confirmParams: {
+        return_url: returnUrl,
+      }
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    return paymentIntent;
+  }
+
+  // Method to retrieve payment element (if you need to access it later)
+  getPaymentElement(): StripePaymentElement | undefined {
+    return this.paymentElement;
+  }
+
+  // Method to retrieve address element (if you need to access it later)
+  getAddressElement(): StripeAddressElement | undefined {
+    return this.addressElement;
+  }
+
   disposeElements() {
+    if (this.addressElement) {
+      this.addressElement.destroy();
+    }
+    if (this.paymentElement) {
+      this.paymentElement.destroy();
+    }
     this.elements = undefined;
     this.addressElement = undefined;
+    this.paymentElement = undefined;
     this.paymentIntentCreated = false;
   }
 }

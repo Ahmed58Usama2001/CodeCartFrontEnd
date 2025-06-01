@@ -1,7 +1,8 @@
 /* checkout.component.css */
 
-/* Address element container styling */
-#address-element {
+/* Address and Payment element container styling */
+#address-element,
+#payment-element {
   min-height: 200px;
   border: 1px solid #e0e0e0;
   border-radius: 8px;
@@ -10,7 +11,8 @@
   transition: border-color 0.3s ease;
 }
 
-#address-element:focus-within {
+#address-element:focus-within,
+#payment-element:focus-within {
   border-color: #1976d2;
   box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
 }
@@ -63,7 +65,8 @@
     padding: 16px !important;
   }
   
-  #address-element {
+  #address-element,
+  #payment-element {
     padding: 12px;
   }
 }

@@ -3,6 +3,9 @@ import {nanoid} from 'nanoid'
 export interface CartType {
     id: string;
     items: CartItem[];
+    deliveryMethodId?:number;
+    paymentIntentId?:string;
+    clientSecret?:string;
 }
 
 export interface CartItem {
@@ -18,4 +21,7 @@ export interface CartItem {
 export class Cart implements CartType {
     id=nanoid();
     items: CartItem[] = [];
+    deliveryMethodId?:number;
+    paymentIntentId?:string;
+    clientSecret?:string;
 }

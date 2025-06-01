@@ -66,6 +66,7 @@
             [tax]="tax()" 
             [shipping]="shipping()" 
             [total]="total()"
+            [hideCheckoutButton]="false"
             (promoCodeApplied)="applyPromoCode($event)"
             (checkoutClicked)="proceedToCheckout()">
           </app-order-summary>

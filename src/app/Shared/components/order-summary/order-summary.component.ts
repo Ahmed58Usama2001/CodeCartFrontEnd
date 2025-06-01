@@ -1,7 +1,7 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 
@@ -10,8 +10,8 @@ import { MatInputModule } from '@angular/material/input';
   standalone: true,
   imports: [
     CommonModule,
-    MatIconModule,
     MatButtonModule,
+    MatIconModule,
     MatFormFieldModule,
     MatInputModule
   ],
@@ -20,9 +20,10 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class OrderSummaryComponent {
   @Input() subtotal: number = 0;
-  @Input() tax: number = 0;
   @Input() shipping: number = 0;
+  @Input() tax: number = 0;
   @Input() total: number = 0;
+  @Input() hideCheckoutButton: boolean = false;
 
   @Output() promoCodeApplied = new EventEmitter<string>();
   @Output() checkoutClicked = new EventEmitter<void>();

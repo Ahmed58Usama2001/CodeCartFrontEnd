@@ -1,1 +1,262 @@
-<p>checkout works!</p>
+<div class="container-fluid py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-xl-10">
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-primary text-white py-3">
+          <div class="d-flex align-items-center">
+            <mat-icon class="me-2">payment</mat-icon>
+            <h4 class="mb-0 fw-bold">Checkout</h4>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12 col-lg-8 mb-4">
+          <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+              <mat-stepper #stepper 
+                          [linear]="false" 
+                          orientation="horizontal"
+                          (keydown)="onStepperKeydown($event)">
+                <!-- Step 1: Address -->
+                <mat-step [stepControl]="addressForm" 
+                          label="Shipping Address"
+                          (click)="goToStep(0)">
+                  <div class="py-3">
+                    <h5 class="mb-3 text-dark fw-semibold">
+                      <mat-icon class="me-2 text-primary">location_on</mat-icon>
+                      Shipping Address
+                    </h5>
+                    <p class="text-muted mb-4">Please provide your shipping address details.</p>
+                    
+                    <form [formGroup]="addressForm">
+                      <!-- Stripe Address Element Container -->
+                      <div id="address-element" class="mb-4"></div>
+                      
+                      @if (addressError) {
+                        <div class="alert alert-danger mb-3" role="alert">
+                          <mat-icon class="me-2">error</mat-icon>
+                          {{ addressError }}
+                        </div>
+                      }
+                    </form>
+
+                    <div class="d-flex justify-content-end mt-4">
+                      <button 
+                        mat-raised-button 
+                        color="primary" 
+                        (click)="validateAddressAndNext()"
+                        [disabled]="addressLoading">
+                        @if (addressLoading) {
+                          <mat-icon class="me-2">hourglass_empty</mat-icon>
+                          Validating...
+                        } @else {
+                          Next: Shipping Options
+                          <mat-icon class="ms-2">arrow_forward</mat-icon>
+                        }
+                      </button>
+                    </div>
+                  </div>
+                </mat-step>
+
+                <!-- Step 2: Shipping -->
+                <mat-step label="Shipping Options"
+                          (click)="goToStep(1)">
+                  <div class="py-3">
+                    <h5 class="mb-3 text-dark fw-semibold">
+                      <mat-icon class="me-2 text-primary">local_shipping</mat-icon>
+                      Shipping Options
+                    </h5>
+                    <p class="text-muted mb-4">Choose your preferred shipping method.</p>
+                    
+                    <div class="row g-3">
+                      <div class="col-12">
+                        <div class="card border-2 border-primary bg-light">
+                          <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div>
+                                <h6 class="mb-1 fw-semibold">Standard Shipping</h6>
+                                <small class="text-muted">5-7 business days</small>
+                              </div>
+                              <span class="badge bg-primary fs-6">$5.99</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="card border">
+                          <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div>
+                                <h6 class="mb-1 fw-semibold">Express Shipping</h6>
+                                <small class="text-muted">2-3 business days</small>
+                              </div>
+                              <span class="badge bg-secondary fs-6">$12.99</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col-12">
+                        <div class="card border">
+                          <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div>
+                                <h6 class="mb-1 fw-semibold">Overnight Shipping</h6>
+                                <small class="text-muted">Next business day</small>
+                              </div>
+                              <span class="badge bg-secondary fs-6">$24.99</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                      <button 
+                        mat-stroked-button 
+                        color="primary" 
+                        matStepperPrevious>
+                        <mat-icon class="me-2">arrow_back</mat-icon>
+                        Back
+                      </button>
+                      <button 
+                        mat-raised-button 
+                        color="primary" 
+                        matStepperNext>
+                        Next: Payment
+                        <mat-icon class="ms-2">arrow_forward</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </mat-step>
+
+                <!-- Step 3: Payment -->
+                <mat-step label="Payment"
+                          (click)="goToStep(2)">
+                  <div class="py-3">
+                    <h5 class="mb-3 text-dark fw-semibold">
+                      <mat-icon class="me-2 text-primary">credit_card</mat-icon>
+                      Payment Information
+                    </h5>
+                    <p class="text-muted mb-4">Enter your payment details securely.</p>
+                    
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="card border">
+                          <div class="card-body">
+                            <h6 class="mb-3">Payment Method</h6>
+                            <!-- Stripe Payment Element will be mounted here -->
+                            <div id="payment-element" class="mb-3"></div>
+                            
+                            <div class="d-flex align-items-center text-muted">
+                              <mat-icon class="me-2" style="font-size: 1rem;">security</mat-icon>
+                              <small>Your payment information is secure and encrypted</small>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                      <button 
+                        mat-stroked-button 
+                        color="primary" 
+                        matStepperPrevious>
+                        <mat-icon class="me-2">arrow_back</mat-icon>
+                        Back
+                      </button>
+                      <button 
+                        mat-raised-button 
+                        color="primary" 
+                        matStepperNext>
+                        Review Order
+                        <mat-icon class="ms-2">arrow_forward</mat-icon>
+                      </button>
+                    </div>
+                  </div>
+                </mat-step>
+
+                <!-- Step 4: Confirmation -->
+                <mat-step label="Review & Confirm"
+                          (click)="goToStep(3)">
+                  <div class="py-3">
+                    <h5 class="mb-3 text-dark fw-semibold">
+                      <mat-icon class="me-2 text-primary">check_circle</mat-icon>
+                      Review Your Order
+                    </h5>
+                    <p class="text-muted mb-4">Please review your order details before placing your order.</p>
+                    
+                    <div class="row g-4">
+                      <div class="col-12">
+                        <div class="card border">
+                          <div class="card-header bg-light">
+                            <h6 class="mb-0 fw-semibold">Shipping Address</h6>
+                          </div>
+                          <div class="card-body">
+                            <div id="address-preview">
+                              <!-- Address preview will be populated here -->
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="col-12">
+                        <div class="card border">
+                          <div class="card-header bg-light">
+                            <h6 class="mb-0 fw-semibold">Shipping Method</h6>
+                          </div>
+                          <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                              <span>Standard Shipping (5-7 business days)</span>
+                              <span class="fw-semibold">$5.99</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between mt-4">
+                      <button 
+                        mat-stroked-button 
+                        color="primary" 
+                        matStepperPrevious>
+                        <mat-icon class="me-2">arrow_back</mat-icon>
+                        Back
+                      </button>
+                      <button 
+                        mat-raised-button 
+                        color="accent" 
+                        class="px-4"
+                        (click)="placeOrder()"
+                        [disabled]="orderProcessing">
+                        @if (orderProcessing) {
+                          <mat-icon class="me-2">hourglass_empty</mat-icon>
+                          Processing...
+                        } @else {
+                          <mat-icon class="me-2">shopping_cart</mat-icon>
+                          Place Order
+                        }
+                      </button>
+                    </div>
+                  </div>
+                </mat-step>
+              </mat-stepper>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Summary Sidebar -->
+        <div class="col-12 col-lg-4">
+          <app-order-summary 
+            [subtotal]="subtotal()" 
+            [tax]="tax()" 
+            [shipping]="shipping()" 
+            [total]="total()"
+            [hideCheckoutButton]="true"
+            (promoCodeApplied)="applyPromoCode($event)">
+          </app-order-summary>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

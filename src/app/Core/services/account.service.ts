@@ -1,10 +1,11 @@
-import { Injectable, signal, computed, effect, inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable, map, catchError, of } from 'rxjs';
-import { Address, FacebookSignInVM, ForgetPasswordDto, GoogleSignInVM, LoginDto, RefreshTokenDto, RegisterDto, ResetPasswordDto, User, UserDto } from '../../Shared/models/User';
+import { Injectable, inject, signal, computed, effect } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
+
 import { environment } from '../../../environments/environment.development';
 import { AuthStateService } from './authstate.service';
-
+import { User, UserDto, RegisterDto, LoginDto, RefreshTokenDto, ForgetPasswordDto, ResetPasswordDto, Address, FacebookSignInVM, GoogleSignInVM } from '../../Shared/models/User';
 declare const google: any;
 declare interface FB {
   init(params: {
@@ -61,7 +62,6 @@ export class AccountService {
   private readonly FACEBOOK_APP_ID = '1105757407206150';
 
   constructor(private http: HttpClient) {
-
     effect(() => {
       const user = this.currentUser();
       const token = this.token();
@@ -144,24 +144,24 @@ export class AccountService {
   }
 
   refreshTokenMethod(refreshToken: string): Observable<UserDto | null> {
-  const refreshTokenData: RefreshTokenDto = { refreshToken };
-  
-  return this.http.post<UserDto>(`${this.baseUrl}/refresh-token`, refreshTokenData)
-    .pipe(
-      map(response => {
-        if (response && response.token) {
-          this.setCurrentUser(response);
-          return response;
-        }
-        return null;
-      }),
-      catchError(error => {
-        // If refresh fails, clear user data
-        this.clearUserData();
-        return this.handleError<UserDto | null>('refreshToken', null)(error);
-      })
-    );
-}
+    const refreshTokenData: RefreshTokenDto = { refreshToken };
+    
+    return this.http.post<UserDto>(`${this.baseUrl}/refresh-token`, refreshTokenData)
+      .pipe(
+        map(response => {
+          if (response && response.token) {
+            this.setCurrentUser(response);
+            return response;
+          }
+          return null;
+        }),
+        catchError(error => {
+          // If refresh fails, clear user data
+          this.clearUserData();
+          return this.handleError<UserDto | null>('refreshToken', null)(error);
+        })
+      );
+  }
 
   googleSignIn(googleData: GoogleSignInVM): Observable<UserDto | null> {
     this.loadingSignal.set(true);
@@ -268,9 +268,7 @@ export class AccountService {
       );
   }
 
-
-  
-  updateUserAddress(address: Address): Observable<Address | null> {
+  updateAddress(address: Address): Observable<Address | null> {
     this.loadingSignal.set(true);
     return this.http.put<Address>(`${this.baseUrl}/address`, address)
       .pipe(
@@ -287,7 +285,7 @@ export class AccountService {
         }),
         catchError(error => {
           this.loadingSignal.set(false);
-          return this.handleError<Address | null>('updateUserAddress', null)(error);
+          return this.handleError<Address | null>('updateAddress', null)(error);
         })
       );
   }
@@ -386,7 +384,7 @@ export class AccountService {
       firstName: userDto.userName.split(' ')[0] || userDto.userName,
       lastName: userDto.userName.split(' ')[1] || '',
       email: userDto.email,
-      address: userDto.address || {} as Address
+      address: userDto.address || {} as Address,
     };
 
     this.currentUserSignal.set(user);

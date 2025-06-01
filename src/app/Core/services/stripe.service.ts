@@ -34,7 +34,6 @@ export class StripeService {
     if (!this.elements) {
       const stripe = await this.getStripeInstance();
       if (stripe) {
-        // Only create initial payment intent if not already created
         let cart: Cart;
         if (!this.paymentIntentCreated) {
           cart = await firstValueFrom(this.CreateOrUpdatePaymentIntent());
@@ -106,7 +105,6 @@ export class StripeService {
     );
   }
 
-  // Method to update payment intent when totals change
   async updatePaymentIntentAmount() {
     if (this.elements && this.paymentIntentCreated) {
       return this.CreateOrUpdatePaymentIntent();

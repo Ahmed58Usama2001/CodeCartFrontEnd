@@ -41,7 +41,6 @@ export class CartComponent implements OnInit {
     if (cartId) {
       this.cartService.getCart(cartId).subscribe({
         next: (cart) => {
-          console.log('Cart loaded successfully', cart);
         },
         error: (error) => {
           console.error('Error loading cart:', error);
@@ -66,7 +65,6 @@ export class CartComponent implements OnInit {
 
   proceedToCheckout() {
     this.router.navigate(['/checkout']);
-    console.log('Proceed to checkout clicked');
   }
 
   applyPromoCode(promoCode: string) {

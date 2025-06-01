@@ -1,0 +1,69 @@
+/* checkout.component.css */
+
+/* Address element container styling */
+#address-element {
+  min-height: 200px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  background-color: #fafafa;
+  transition: border-color 0.3s ease;
+}
+
+#address-element:focus-within {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+/* Section headers styling */
+.address-section h5,
+.payment-section h5,
+.confirmation-section h5 {
+  color: #333;
+  font-weight: 600;
+}
+
+/* Stepper customization */
+.mat-horizontal-stepper-header {
+  padding: 24px;
+}
+
+.mat-step-header {
+  min-height: 72px;
+}
+
+/* Loading spinner positioning */
+.spinner-border {
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Button spacing */
+.mat-mdc-button,
+.mat-mdc-raised-button {
+  margin: 0 8px;
+}
+
+/* Card styling improvements */
+.card {
+  transition: box-shadow 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12) !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding: 16px;
+  }
+  
+  .card-body {
+    padding: 16px !important;
+  }
+  
+  #address-element {
+    padding: 12px;
+  }
+}

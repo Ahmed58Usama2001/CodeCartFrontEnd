@@ -23,14 +23,25 @@
                 
                 <!-- Step 1: Address -->
                 <mat-step label="Address">
-                  <div id="address-element">
-                    <!-- Address element content -->
+                  <div class="address-section">
+                    <div class="d-flex align-items-center mb-4">
+                      <mat-icon class="text-primary me-2">location_on</mat-icon>
+                      <h5 class="mb-0 fw-semibold">Shipping Address</h5>
+                    </div>
+                    <div id="address-element" class="mb-4">
+                      <!-- Stripe Address element will be mounted here -->
+                      <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
+                        <div class="spinner-border text-primary" role="status">
+                          <span class="visually-hidden">Loading address form...</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                   <div class="d-flex justify-content-between mt-5">
                     <button mat-stroked-button routerLink="/shop" routerLinkActive="router-link-active">
                       Continue Shopping
                     </button>
-                    <button mat-flat-button matStepperNext>
+                    <button mat-flat-button (click)="validateAndProceedFromAddress()">
                       Next
                     </button>
                   </div>
@@ -53,7 +64,6 @@
 
                 <!-- Step 3: Payment -->
                 <mat-step label="Payment">
-                  <!-- Payment form content will go here -->
                   <div class="payment-section">
                     <div class="d-flex align-items-center mb-4">
                       <mat-icon class="text-primary me-2">credit_card</mat-icon>

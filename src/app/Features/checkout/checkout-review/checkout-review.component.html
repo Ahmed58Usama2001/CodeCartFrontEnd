@@ -1,0 +1,75 @@
+<div class="review-container">
+    <div class="d-flex align-items-center mb-4">
+        <mat-icon class="text-primary me-2">shopping_cart</mat-icon>
+        <h5 class="mb-0 fw-semibold">Order Review</h5>
+    </div>
+
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-light py-3">
+            <h6 class="mb-0 fw-semibold text-muted">Items in Your Cart</h6>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <mat-table [dataSource]="cartItems" class="w-100">
+                    <ng-container matColumnDef="product">
+                        <mat-header-cell *matHeaderCellDef class="fw-semibold">Product</mat-header-cell>
+                        <mat-cell *matCellDef="let item" class="product-cell">
+                            <div class="d-flex align-items-center">
+                                <div class="product-image-wrapper me-3">
+                                    <img [src]="item.pictureUrl" [alt]="item.productName" class="product-image"
+                                        onerror="this.src='assets/images/placeholder.jpg'" />
+                                </div>
+                                <div class="product-details">
+                                    <h6 class="product-name mb-1 fw-semibold">{{ item.productName }}</h6>
+                                    <div class="product-meta">
+                                        <span class="badge bg-secondary me-2">{{ item.brand }}</span>
+                                        <span class="text-muted small">{{ item.type }}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="price">
+                        <mat-header-cell *matHeaderCellDef class="fw-semibold text-center">Price</mat-header-cell>
+                        <mat-cell *matCellDef="let item" class="text-center">
+                            <span class="fw-semibold">{{ item.price | currency:'USD':'symbol':'1.2-2' }}</span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="quantity">
+                        <mat-header-cell *matHeaderCellDef class="fw-semibold text-center">Quantity</mat-header-cell>
+                        <mat-cell *matCellDef="let item" class="text-center">
+                            <div class="quantity-display">
+                                <span class="quantity-badge">{{ item.quantity }}</span>
+                            </div>
+                        </mat-cell>
+                    </ng-container>
+
+                    <ng-container matColumnDef="total">
+                        <mat-header-cell *matHeaderCellDef class="fw-semibold text-end">Total</mat-header-cell>
+                        <mat-cell *matCellDef="let item" class="text-end">
+                            <span class="fw-bold text-primary">
+                                {{ (item.price * item.quantity) | currency:'USD':'symbol':'1.2-2' }}
+                            </span>
+                        </mat-cell>
+                    </ng-container>
+
+                    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+                </mat-table>
+            </div>
+        </div>
+    </div>
+
+    
+
+    @if (cartItems?.length === 0) {
+    <div class="text-center py-5">
+        <mat-icon class="display-1 text-muted mb-3">shopping_cart</mat-icon>
+        <h5 class="text-muted mb-3">Your cart is empty</h5>
+        <p class="text-muted">Add some items to your cart to proceed with checkout.</p>
+    </div>
+    }
+
+</div>

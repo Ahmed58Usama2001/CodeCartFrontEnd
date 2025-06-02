@@ -154,8 +154,8 @@
                     </button>
                     <button 
                       mat-flat-button 
+                      matStepperNext
                       color="primary"
-                      (click)="validateAndProcessPayment()"
                       [disabled]="!completionStatus().card">
                       Pay {{ total() | currency:'USD':'symbol':'1.2-2' }}
                       <mat-icon class="ms-2">payment</mat-icon>

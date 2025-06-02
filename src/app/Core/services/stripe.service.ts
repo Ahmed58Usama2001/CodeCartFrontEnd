@@ -16,8 +16,6 @@ export class StripeService {
   private http = inject(HttpClient)
   private cartSerice = inject(CartService);
   private elements?: StripeElements;
-  private addressElement?: StripeAddressElement;
-  private paymentElement?: StripePaymentElement;
   private accountService = inject(AccountService);
   private paymentIntentCreated = false;
 
@@ -57,64 +55,59 @@ export class StripeService {
     return this.elements;
   }
 
-  async createAddressElement() {
-    if (!this.addressElement) {
-      const elements = await this.initializeElements();
-      if (elements) {
-        const user = this.accountService.currentUser();
-        let defaultValues: StripeAddressElementOptions['defaultValues'] = {};
+  async createAddressElement(): Promise<StripeAddressElement> {
+    const elements = await this.initializeElements();
+    if (elements) {
+      const user = this.accountService.currentUser();
+      let defaultValues: StripeAddressElementOptions['defaultValues'] = {};
 
-        if (user) {
-          defaultValues.name = user.firstName + ' ' + user.lastName;
-        }
-
-        if (user && user.address) {
-          defaultValues = {
-            ...defaultValues,
-            address: {
-              line1: user.address.line1,
-              city: user.address.city,
-              state: user.address.state,
-              postal_code: user.address.postalCode,
-              country: user.address.country
-            }
-          };
-        }
-
-        const options: StripeAddressElementOptions = {
-          mode: 'shipping',
-          defaultValues
-        };
-        this.addressElement = elements.create('address', options);
-      } else {
-        throw new Error('Stripe elements not initialized');
+      if (user) {
+        defaultValues.name = user.firstName + ' ' + user.lastName;
       }
-    }
 
-    return this.addressElement;
+      if (user && user.address) {
+        defaultValues = {
+          ...defaultValues,
+          address: {
+            line1: user.address.line1,
+            city: user.address.city,
+            state: user.address.state,
+            postal_code: user.address.postalCode,
+            country: user.address.country
+          }
+        };
+      }
+
+      const options: StripeAddressElementOptions = {
+        mode: 'shipping',
+        defaultValues
+      };
+      
+      // Always create a new address element instance
+      return elements.create('address', options);
+    } else {
+      throw new Error('Stripe elements not initialized');
+    }
   }
 
   async createPaymentElement(): Promise<StripePaymentElement> {
-    if (!this.paymentElement) {
-      const elements = await this.initializeElements();
-      if (elements) {
-        const options: StripePaymentElementOptions = {
-          layout: 'tabs',
-          defaultValues: {
-            billingDetails: {
-              name: '',
-              email: '',
-            }
+    const elements = await this.initializeElements();
+    if (elements) {
+      const options: StripePaymentElementOptions = {
+        layout: 'tabs',
+        defaultValues: {
+          billingDetails: {
+            name: '',
+            email: '',
           }
-        };
-        
-        this.paymentElement = elements.create('payment', options);
-      } else {
-        throw new Error('Stripe elements not initialized');
-      }
+        }
+      };
+      
+      // Always create a new payment element instance
+      return elements.create('payment', options);
+    } else {
+      throw new Error('Stripe elements not initialized');
     }
-
-    return this.paymentElement;
   }
   
   async CreateConfirmationToken(){
@@ -169,24 +162,8 @@ export class StripeService {
     return paymentIntent;
   }
 
-  getPaymentElement(): StripePaymentElement | undefined {
-    return this.paymentElement;
-  }
-
-  getAddressElement(): StripeAddressElement | undefined {
-    return this.addressElement;
-  }
-
   disposeElements() {
-    if (this.addressElement) {
-      this.addressElement.destroy();
-    }
-    if (this.paymentElement) {
-      this.paymentElement.destroy();
-    }
     this.elements = undefined;
-    this.addressElement = undefined;
-    this.paymentElement = undefined;
     this.paymentIntentCreated = false;
   }
 }

@@ -214,24 +214,7 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  async processPayment() {
-    try {
-      if (!this.paymentElement) {
-        throw new Error('Payment element not initialized');
-      }
 
-      const result = await this.stripeService.confirmPayment(window.location.origin + '/checkout/success');
-      
-      if (result.status === 'succeeded') {
-        console.log('Payment succeeded!', result);
-        this.stepper.next();
-      } else {
-        console.log('Payment status:', result.status);
-      }
-    } catch (error) {
-      console.error('Payment failed:', error);
-    }
-  }
 
   async getAddressData() {
     if (this.addressElement) {
@@ -293,20 +276,6 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
     }
   }
 
-  async validateAndProcessPayment() {
-    if (this.completionStatus().card) {
-      this.validationErrors.update(errors => ({
-        ...errors,
-        card: ''
-      }));
-      await this.processPayment();
-    } else {
-      this.validationErrors.update(errors => ({
-        ...errors,
-        card: 'Please complete your payment information'
-      }));
-    }
-  }
 
   canAccessStep(stepIndex: number): boolean {
     switch (stepIndex) {

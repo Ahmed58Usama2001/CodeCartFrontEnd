@@ -1,5 +1,5 @@
 // checkout.component.ts
-import { Component, ViewChild, inject, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, inject, OnInit, AfterViewInit, OnDestroy, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
@@ -37,7 +37,7 @@ export interface DeliveryMethod {
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
 })
-export class CheckoutComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CheckoutComponent implements AfterViewInit, OnDestroy {
   @ViewChild('stepper') stepper!: MatStepper;
   
   private cartService = inject(CartService);
@@ -50,9 +50,18 @@ export class CheckoutComponent implements OnInit, AfterViewInit, OnDestroy {
   shipping = this.cartService.shipping;
   total = this.cartService.total;
 
-  ngOnInit() {
-    console.log('Checkout component initialized');
-  }
+  completionStatus = signal<{address: boolean, delivery: boolean, card: boolean}>({
+    address: false,
+    delivery: false,
+    card: false
+  });
+
+  // Error messages for validation
+  validationErrors = signal<{address: string, delivery: string, card: string}>({
+    address: '',
+    delivery: '',
+    card: ''
+  });
 
   ngAfterViewInit() {
     this.initializeAddressElement();
@@ -77,9 +86,21 @@ export class CheckoutComponent implements OnInit, AfterViewInit, OnDestroy {
         this.addressElement.mount('#address-element');
         
         this.addressElement.on('change', (event) => {
+          // Update completion status based on address completion
+          this.completionStatus.update(status => ({
+            ...status,
+            address: event.complete
+          }));
+          
+          // Clear validation error if address is complete
           if (event.complete) {
-            console.log('Address completed:', event.value);
+            this.validationErrors.update(errors => ({
+              ...errors,
+              address: ''
+            }));
           }
+          
+          console.log('Address completed:', event.complete, event.value);
         });
       }
     } catch (error) {
@@ -92,12 +113,29 @@ export class CheckoutComponent implements OnInit, AfterViewInit, OnDestroy {
     
     this.cartService.setDeliveryMethod(deliveryMethod);
     
+    // Mark delivery as completed when a method is selected
+    this.completionStatus.update(status => ({
+      ...status,
+      delivery: true
+    }));
+
+    // Clear delivery validation error
+    this.validationErrors.update(errors => ({
+      ...errors,
+      delivery: ''
+    }));
+    
     this.cartService.updateCartDeliveryMethod(deliveryMethod.id).subscribe({
       next: (updatedCart) => {
         console.log('Delivery method updated in cart:', updatedCart);
       },
       error: (error) => {
         console.error('Error updating delivery method:', error);
+        // Reset delivery completion on error
+        this.completionStatus.update(status => ({
+          ...status,
+          delivery: false
+        }));
       }
     });
   }
@@ -142,6 +180,20 @@ export class CheckoutComponent implements OnInit, AfterViewInit, OnDestroy {
       if (paymentElementDiv && this.paymentElement) {
         this.paymentElement.mount('#payment-element');
         
+        // Listen for changes in the payment element
+        this.paymentElement.on('change', (event) => {
+          this.completionStatus.update(status => ({
+            ...status,
+            card: event.complete
+          }));
+          
+          if (event.complete) {
+            this.validationErrors.update(errors => ({
+              ...errors,
+              card: ''
+            }));
+          }
+        });
       }
     } catch (error) {
       console.error('Error initializing payment element:', error);
@@ -167,6 +219,7 @@ export class CheckoutComponent implements OnInit, AfterViewInit, OnDestroy {
       // Show error message to user
     }
   }
+
   async getAddressData() {
     if (this.addressElement) {
       const { complete, value } = await this.addressElement.getValue();
@@ -185,14 +238,78 @@ export class CheckoutComponent implements OnInit, AfterViewInit, OnDestroy {
       const addressData = await this.getAddressData();
       console.log('Address data:', addressData);
       
-      // You can save the address data to your service or perform validation here
-      // For example, update the cart with the shipping address
+      this.completionStatus.update(status => ({
+        ...status,
+        address: true
+      }));
+
+      this.validationErrors.update(errors => ({
+        ...errors,
+        address: ''
+      }));
       
       // Move to next step
       this.stepper.next();
     } catch (error) {
       console.error('Address validation failed:', error);
-      // Show error message to user
+      
+      this.completionStatus.update(status => ({
+        ...status,
+        address: false
+      }));
+
+      this.validationErrors.update(errors => ({
+        ...errors,
+        address: 'Please complete your address information'
+      }));
+    }
+  }
+
+  // Method to validate delivery before moving to next step
+  validateAndProceedFromDelivery() {
+    if (this.completionStatus().delivery) {
+      this.validationErrors.update(errors => ({
+        ...errors,
+        delivery: ''
+      }));
+      this.stepper.next();
+    } else {
+      this.validationErrors.update(errors => ({
+        ...errors,
+        delivery: 'Please select a delivery method'
+      }));
+    }
+  }
+
+  // Method to validate payment before processing
+  async validateAndProcessPayment() {
+    if (this.completionStatus().card) {
+      this.validationErrors.update(errors => ({
+        ...errors,
+        card: ''
+      }));
+      await this.processPayment();
+    } else {
+      this.validationErrors.update(errors => ({
+        ...errors,
+        card: 'Please complete your payment information'
+      }));
+    }
+  }
+
+  // Check if a step can be accessed
+  canAccessStep(stepIndex: number): boolean {
+    switch (stepIndex) {
+      case 0: // Address step
+        return true;
+      case 1: // Delivery step
+        return this.completionStatus().address;
+      case 2: // Payment step
+        return this.completionStatus().address && this.completionStatus().delivery;
+      case 3: // Confirmation step
+        return this.completionStatus().address && this.completionStatus().delivery && this.completionStatus().card;
+      default:
+        return false;
     }
   }
 }

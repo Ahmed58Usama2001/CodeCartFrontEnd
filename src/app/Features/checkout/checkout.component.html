@@ -18,16 +18,34 @@
             <div class="card-body p-4">
               <mat-horizontal-stepper 
                 #stepper 
-                [linear]="false" 
+                [linear]="true" 
                 (selectionChange)="onStepperSelectionChange($event)">
                 
                 <!-- Step 1: Address -->
-                <mat-step label="Address">
+                <mat-step 
+                  label="Address" 
+                  [completed]="completionStatus().address"
+                  [hasError]="!!validationErrors().address">
                   <div class="address-section">
                     <div class="d-flex align-items-center mb-4">
                       <mat-icon class="text-primary me-2">location_on</mat-icon>
                       <h5 class="mb-0 fw-semibold">Shipping Address</h5>
+                      <mat-icon 
+                        *ngIf="completionStatus().address" 
+                        class="text-success ms-2">
+                        check_circle
+                      </mat-icon>
                     </div>
+                    
+                    <!-- Validation Error Display -->
+                    <div 
+                      *ngIf="validationErrors().address" 
+                      class="alert alert-danger d-flex align-items-center mb-3" 
+                      role="alert">
+                      <mat-icon class="me-2">error</mat-icon>
+                      <div>{{ validationErrors().address }}</div>
+                    </div>
+                    
                     <div id="address-element" class="mb-4">
                       <!-- Stripe Address element will be mounted here -->
                       <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
@@ -41,34 +59,85 @@
                     <button mat-stroked-button routerLink="/shop" routerLinkActive="router-link-active">
                       Continue Shopping
                     </button>
-                    <button mat-flat-button (click)="validateAndProceedFromAddress()">
+                    <button 
+                      mat-flat-button 
+                      (click)="validateAndProceedFromAddress()"
+                      [disabled]="!completionStatus().address">
                       Next
+                      <mat-icon class="ms-1">arrow_forward</mat-icon>
                     </button>
                   </div>
                 </mat-step>
 
                 <!-- Step 2: Shipping -->
-                <mat-step label="Shipping">
-                  <app-checkout-delivery 
-                    (deliveryMethodSelected)="onDeliveryMethodSelected($event)">
-                  </app-checkout-delivery>
+                <mat-step 
+                  label="Shipping"
+                  [completed]="completionStatus().delivery"
+                  [hasError]="!!validationErrors().delivery">
+                  <div class="delivery-section">
+                    <div class="d-flex align-items-center mb-4">
+                      <mat-icon class="text-primary me-2">local_shipping</mat-icon>
+                      <h5 class="mb-0 fw-semibold">Delivery Method</h5>
+                      <mat-icon 
+                        *ngIf="completionStatus().delivery" 
+                        class="text-success ms-2">
+                        check_circle
+                      </mat-icon>
+                    </div>
+                    
+                    <!-- Validation Error Display -->
+                    <div 
+                      *ngIf="validationErrors().delivery" 
+                      class="alert alert-danger d-flex align-items-center mb-3" 
+                      role="alert">
+                      <mat-icon class="me-2">error</mat-icon>
+                      <div>{{ validationErrors().delivery }}</div>
+                    </div>
+                    
+                    <app-checkout-delivery 
+                      (deliveryMethodSelected)="onDeliveryMethodSelected($event)">
+                    </app-checkout-delivery>
+                  </div>
                   <div class="d-flex justify-content-between mt-5">
                     <button mat-stroked-button matStepperPrevious>
+                      <mat-icon class="me-1">arrow_back</mat-icon>
                       Back
                     </button>
-                    <button mat-flat-button matStepperNext>
+                    <button 
+                      mat-flat-button 
+                      (click)="validateAndProceedFromDelivery()"
+                      [disabled]="!completionStatus().delivery">
                       Next
+                      <mat-icon class="ms-1">arrow_forward</mat-icon>
                     </button>
                   </div>
                 </mat-step>
 
                 <!-- Step 3: Payment -->
-                <mat-step label="Payment">
+                <mat-step 
+                  label="Payment"
+                  [completed]="completionStatus().card"
+                  [hasError]="!!validationErrors().card">
                   <div class="payment-section">
                     <div class="d-flex align-items-center mb-4">
                       <mat-icon class="text-primary me-2">credit_card</mat-icon>
                       <h5 class="mb-0 fw-semibold">Payment Information</h5>
+                      <mat-icon 
+                        *ngIf="completionStatus().card" 
+                        class="text-success ms-2">
+                        check_circle
+                      </mat-icon>
                     </div>
+                    
+                    <!-- Validation Error Display -->
+                    <div 
+                      *ngIf="validationErrors().card" 
+                      class="alert alert-danger d-flex align-items-center mb-3" 
+                      role="alert">
+                      <mat-icon class="me-2">error</mat-icon>
+                      <div>{{ validationErrors().card }}</div>
+                    </div>
+                    
                     <div id="payment-element" class="mb-4">
                       <!-- Stripe Payment element will be mounted here -->
                       <div class="d-flex justify-content-center align-items-center" style="min-height: 200px;">
@@ -80,10 +149,16 @@
                   </div>
                   <div class="d-flex justify-content-between mt-5">
                     <button mat-stroked-button matStepperPrevious>
+                      <mat-icon class="me-1">arrow_back</mat-icon>
                       Back
                     </button>
-                    <button mat-flat-button (click)="processPayment()">
-                      Pay Now
+                    <button 
+                      mat-flat-button 
+                      color="primary"
+                      (click)="validateAndProcessPayment()"
+                      [disabled]="!completionStatus().card">
+                      Pay {{ total() | currency:'USD':'symbol':'1.2-2' }}
+                      <mat-icon class="ms-2">payment</mat-icon>
                     </button>
                   </div>
                 </mat-step>
@@ -95,15 +170,12 @@
                       <mat-icon class="text-success me-2">check_circle</mat-icon>
                       <h5 class="mb-0 fw-semibold">Order Confirmation</h5>
                     </div>
-                   <app-checkout-review></app-checkout-review>
+                    <app-checkout-review></app-checkout-review>
                   </div>
-                  <div class="d-flex justify-content-between mt-5">
-                    <button mat-stroked-button matStepperPrevious>
-                      Back
-                    </button>
-                    <button mat-flat-button color="primary">
-                      Pay {{ total() | currency:'USD':'symbol':'1.2-2' }}
-                      <mat-icon class="ms-2">payment</mat-icon>
+                  <div class="d-flex justify-content-center mt-5">
+                    <button mat-flat-button color="primary" routerLink="/orders">
+                      View My Orders
+                      <mat-icon class="ms-2">receipt_long</mat-icon>
                     </button>
                   </div>
                 </mat-step>
@@ -121,6 +193,45 @@
             [hideCheckoutButton]="true"
             (promoCodeApplied)="applyPromoCode($event)">
           </app-order-summary>
+          
+          <!-- Progress Indicator -->
+          <div class="card shadow-sm border-0 mt-3">
+            <div class="card-header bg-light">
+              <h6 class="mb-0 fw-semibold">Progress</h6>
+            </div>
+            <div class="card-body">
+              <div class="progress-item d-flex align-items-center mb-2">
+                <mat-icon 
+                  [class]="completionStatus().address ? 'text-success' : 'text-muted'"
+                  class="me-2">
+                  {{ completionStatus().address ? 'check_circle' : 'radio_button_unchecked' }}
+                </mat-icon>
+                <span [class]="completionStatus().address ? 'text-success' : 'text-muted'">
+                  Address
+                </span>
+              </div>
+              <div class="progress-item d-flex align-items-center mb-2">
+                <mat-icon 
+                  [class]="completionStatus().delivery ? 'text-success' : 'text-muted'"
+                  class="me-2">
+                  {{ completionStatus().delivery ? 'check_circle' : 'radio_button_unchecked' }}
+                </mat-icon>
+                <span [class]="completionStatus().delivery ? 'text-success' : 'text-muted'">
+                  Delivery Method
+                </span>
+              </div>
+              <div class="progress-item d-flex align-items-center">
+                <mat-icon 
+                  [class]="completionStatus().card ? 'text-success' : 'text-muted'"
+                  class="me-2">
+                  {{ completionStatus().card ? 'check_circle' : 'radio_button_unchecked' }}
+                </mat-icon>
+                <span [class]="completionStatus().card ? 'text-success' : 'text-muted'">
+                  Payment
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

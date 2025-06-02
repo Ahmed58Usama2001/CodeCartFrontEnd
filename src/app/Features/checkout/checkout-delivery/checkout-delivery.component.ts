@@ -1,5 +1,5 @@
 // checkout-delivery.component.ts
-import { Component, inject, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, inject, OnInit, Output, EventEmitter, output } from '@angular/core';
 import { CheckoutService } from '../../../Core/services/checkout.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -47,10 +47,9 @@ export class CheckoutDeliveryComponent implements OnInit {
     this.checkoutService.getDeliveryMethods().subscribe({
       next: (methods: DeliveryMethod[]) => {
         this.deliveryMethods = methods;
-        // Auto-select the first method if available
+       //You can comment this for not  auto-selecting first method - require user interaction
         if (methods.length > 0) {
           this.selectedDeliveryMethod = methods[0].id;
-          // Emit the selected method immediately
           this.deliveryMethodSelected.emit(methods[0]);
         }
       },
@@ -65,12 +64,16 @@ export class CheckoutDeliveryComponent implements OnInit {
     console.log('Delivery method changed:', event.value);
     const selectedMethod = this.deliveryMethods.find(method => method.id === event.value);
     if (selectedMethod) {
-      // Emit the selected delivery method to parent component
+      this.selectedDeliveryMethod = event.value;
       this.deliveryMethodSelected.emit(selectedMethod);
     }
   }
 
   getSelectedMethod(): DeliveryMethod | undefined {
     return this.deliveryMethods.find(method => method.id === this.selectedDeliveryMethod);
+  }
+
+  isDeliveryCompleted(): boolean {
+    return this.selectedDeliveryMethod !== null && this.getSelectedMethod() !== undefined;
   }
 }

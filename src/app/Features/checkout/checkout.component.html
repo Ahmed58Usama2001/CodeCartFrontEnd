@@ -170,7 +170,7 @@
                       <mat-icon class="text-success me-2">check_circle</mat-icon>
                       <h5 class="mb-0 fw-semibold">Order Confirmation</h5>
                     </div>
-                    <app-checkout-review></app-checkout-review>
+                    <app-checkout-review [confirmationToken]="confirmationToken" ></app-checkout-review>
                   </div>
                   <div class="d-flex justify-content-center mt-5">
                     <button mat-flat-button color="primary" routerLink="/orders">

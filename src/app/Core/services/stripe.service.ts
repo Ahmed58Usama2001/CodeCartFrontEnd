@@ -116,6 +116,17 @@ export class StripeService {
 
     return this.paymentElement;
   }
+  
+  async CreateConfirmationToken(){
+    const stripe = await this.getStripeInstance();
+    const elements = await this.initializeElements();
+    const result = await elements?.submit();
+    if (result?.error) throw result.error.message;
+    if(stripe)
+    {return await stripe.createConfirmationToken({elements})}
+    else 
+    {throw new Error('Stripe not initialized');}
+  }
 
   CreateOrUpdatePaymentIntent() {
     const cart = this.cartSerice.cart();
@@ -130,7 +141,6 @@ export class StripeService {
     );
   }
 
-  // Method to update payment intent when totals change
   async updatePaymentIntentAmount() {
     if (this.elements && this.paymentIntentCreated) {
       return this.CreateOrUpdatePaymentIntent();
@@ -138,7 +148,6 @@ export class StripeService {
     return null;
   }
 
-  // Method to confirm payment
   async confirmPayment(returnUrl: string) {
     const stripe = await this.getStripeInstance();
     if (!stripe || !this.elements) {
@@ -160,12 +169,10 @@ export class StripeService {
     return paymentIntent;
   }
 
-  // Method to retrieve payment element (if you need to access it later)
   getPaymentElement(): StripePaymentElement | undefined {
     return this.paymentElement;
   }
 
-  // Method to retrieve address element (if you need to access it later)
   getAddressElement(): StripeAddressElement | undefined {
     return this.addressElement;
   }

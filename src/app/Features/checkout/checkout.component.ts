@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { MatStepperModule, MatStepper } from '@angular/material/stepper';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ConfirmationToken, StripeAddressElement, StripePaymentElement } from '@stripe/stripe-js';
 
 import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery.component';
@@ -34,33 +34,34 @@ export interface DeliveryMethod {
     CheckoutDeliveryComponent,
     OrderSummaryComponent,
     CheckoutReviewComponent
-],
+  ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
 })
 export class CheckoutComponent implements AfterViewInit, OnDestroy {
   @ViewChild('stepper') stepper!: MatStepper;
-  
+
   private cartService = inject(CartService);
   private stripeService = inject(StripeService);
   private SnackbarService = inject(SnackbarService);
-  
+  private router = inject(Router);
+
   private addressElement?: StripeAddressElement;
   private paymentElement?: StripePaymentElement;
-  
+
   subtotal = this.cartService.subtotal;
   shipping = this.cartService.shipping;
   total = this.cartService.total;
 
-  completionStatus = signal<{address: boolean, delivery: boolean, card: boolean}>({
+  completionStatus = signal<{ address: boolean, delivery: boolean, card: boolean }>({
     address: false,
     delivery: false,
     card: false
   });
 
-  confirmationToken?:ConfirmationToken
+  confirmationToken?: ConfirmationToken
 
-  validationErrors = signal<{address: string, delivery: string, card: string}>({
+  validationErrors = signal<{ address: string, delivery: string, card: string }>({
     address: '',
     delivery: '',
     card: ''
@@ -83,24 +84,24 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
   private async initializeAddressElement() {
     try {
       this.addressElement = await this.stripeService.createAddressElement();
-      
+
       const addressElementDiv = document.getElementById('address-element');
       if (addressElementDiv && this.addressElement) {
         this.addressElement.mount('#address-element');
-        
+
         this.addressElement.on('change', (event) => {
           this.completionStatus.update(status => ({
             ...status,
             address: event.complete
           }));
-          
+
           if (event.complete) {
             this.validationErrors.update(errors => ({
               ...errors,
               address: ''
             }));
           }
-          
+
         });
       }
     } catch (error) {
@@ -109,9 +110,9 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
   }
 
   onDeliveryMethodSelected(deliveryMethod: DeliveryMethod) {
-    
+
     this.cartService.setDeliveryMethod(deliveryMethod);
-    
+
     this.completionStatus.update(status => ({
       ...status,
       delivery: true
@@ -121,7 +122,7 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
       ...errors,
       delivery: ''
     }));
-    
+
     this.cartService.updateCartDeliveryMethod(deliveryMethod.id).subscribe({
       next: (updatedCart) => {
         console.log('Delivery method updated in cart:', updatedCart);
@@ -137,37 +138,56 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
   }
 
   async getConfirmationToken() {
-    if(Object.values(this.completionStatus()).every(status => status)) {
+    if (Object.values(this.completionStatus()).every(status => status)) {
       try {
         const result = await this.stripeService.CreateConfirmationToken();
-        if (result.error) 
+        if (result.error)
           throw new Error(result.error.message || 'Failed to create confirmation token');
         this.confirmationToken = result.confirmationToken;
         console.log('Confirmation token received:', this.confirmationToken);
-        
-        
-      } catch (error:any) {
+
+
+      } catch (error: any) {
         this.SnackbarService.error(error.message || 'Failed to get confirmation token');
       }
-    } 
+    }
   }
 
-   async onStepperSelectionChange(event: any) {
+  async onStepperSelectionChange(event: any) {
     const selectedIndex = event.selectedIndex;
     const previousIndex = event.previouslySelectedIndex;
-    
-    
+
+
     if (selectedIndex === 2 && !this.paymentElement) {
       this.initializePaymentElement();
     }
-    
+
     if (previousIndex === 1 && selectedIndex === 2) {
       console.log('Moving from Shipping to Payment - updating payment intent');
       this.updatePaymentIntent();
     }
 
-    if(selectedIndex===3)
+    if (selectedIndex === 3)
       await this.getConfirmationToken();
+  }
+
+  async ConfirmPayment(stepper: MatStepper) {
+    try {
+      if (this.confirmationToken) {
+        const result = await this.stripeService.ConfirmPayment(this.confirmationToken);
+        if( result.error) {
+          throw new Error(result.error.message || 'Failed to confirm payment');
+        }else{
+          this.cartService.deleteCart()
+          this.cartService.selectedDeliveryMethod.set(null)
+          this.router.navigate(['/checkout/success']);
+        }
+      }
+    } catch (error: any) {
+      this.SnackbarService.error(error.message || 'Failed to confirm payment');
+      stepper.previous();
+    }
+
   }
 
   private updatePaymentIntent() {
@@ -189,18 +209,18 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
   private async initializePaymentElement() {
     try {
       this.paymentElement = await this.stripeService.createPaymentElement();
-      
+
       const paymentElementDiv = document.getElementById('payment-element');
       if (paymentElementDiv && this.paymentElement) {
         this.paymentElement.mount('#payment-element');
-        
+
         // Listen for changes in the payment element
         this.paymentElement.on('change', (event) => {
           this.completionStatus.update(status => ({
             ...status,
             card: event.complete
           }));
-          
+
           if (event.complete) {
             this.validationErrors.update(errors => ({
               ...errors,
@@ -228,11 +248,10 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
     throw new Error('Address element not initialized');
   }
 
-  // Method to validate address before moving to next step
   async validateAndProceedFromAddress() {
     try {
       const addressData = await this.getAddressData();
-      
+
       this.completionStatus.update(status => ({
         ...status,
         address: true
@@ -242,12 +261,12 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
         ...errors,
         address: ''
       }));
-      
+
       // Move to next step
       this.stepper.next();
     } catch (error) {
       console.error('Address validation failed:', error);
-      
+
       this.completionStatus.update(status => ({
         ...status,
         address: false
@@ -279,16 +298,18 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
 
   canAccessStep(stepIndex: number): boolean {
     switch (stepIndex) {
-      case 0: 
+      case 0:
         return true;
-      case 1: 
+      case 1:
         return this.completionStatus().address;
-      case 2: 
+      case 2:
         return this.completionStatus().address && this.completionStatus().delivery;
-      case 3: 
+      case 3:
         return this.completionStatus().address && this.completionStatus().delivery && this.completionStatus().card;
       default:
         return false;
     }
   }
+
+
 }

@@ -141,14 +141,17 @@
                     </div>
                     <app-checkout-review [confirmationToken]="confirmationToken"></app-checkout-review>
                   </div>
-                <div class="justify-content-between d-flex mt-5">
+                  <div class="justify-content-between d-flex mt-5">
                     <button mat-stroked-button matStepperPrevious>
                       <mat-icon class="me-1">arrow_back</mat-icon>
                       Back
                     </button>
-                    <button mat-flat-button color="primary" (click)="ConfirmPayment(stepper)">
-                      Complete Order
-                      <mat-icon class="ms-2">check_circle</mat-icon>
+                    <button mat-flat-button color="primary" class="d-flex justify-content-evenly" (click)="ConfirmPayment(stepper)" [disabled]="loading || !confirmationToken">
+                      @if(loading){
+                        <mat-spinner diameter="20" class="me-2"></mat-spinner>
+                      }
+                      @else{
+                      Complete Order                      }
                     </button>
                   </div>
                 </mat-step>

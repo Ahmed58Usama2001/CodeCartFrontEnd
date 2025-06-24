@@ -6,7 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { ConfirmationToken, StripeAddressElement, StripePaymentElement } from '@stripe/stripe-js';
-
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
 import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery.component';
 import { OrderSummaryComponent } from '../../Shared/components/order-summary/order-summary.component';
 import { CartService } from '../../Core/services/cart.service';
@@ -33,7 +33,8 @@ export interface DeliveryMethod {
     RouterModule,
     CheckoutDeliveryComponent,
     OrderSummaryComponent,
-    CheckoutReviewComponent
+    CheckoutReviewComponent,
+    MatProgressSpinnerModule
   ],
   templateUrl: './checkout.component.html',
   styleUrl: './checkout.component.css'
@@ -60,6 +61,7 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
   });
 
   confirmationToken?: ConfirmationToken
+  loading = false
 
   validationErrors = signal<{ address: string, delivery: string, card: string }>({
     address: '',
@@ -172,6 +174,7 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
   }
 
   async ConfirmPayment(stepper: MatStepper) {
+    this.loading=true
     try {
       if (this.confirmationToken) {
         const result = await this.stripeService.ConfirmPayment(this.confirmationToken);
@@ -186,6 +189,8 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
     } catch (error: any) {
       this.SnackbarService.error(error.message || 'Failed to confirm payment');
       stepper.previous();
+    }finally{
+      this.loading=false
     }
 
   }

@@ -6,13 +6,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { Router, RouterModule } from '@angular/router';
 import { ConfirmationToken, StripeAddressElement, StripePaymentElement } from '@stripe/stripe-js';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner'; 
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CheckoutDeliveryComponent } from './checkout-delivery/checkout-delivery.component';
 import { OrderSummaryComponent } from '../../Shared/components/order-summary/order-summary.component';
 import { CartService } from '../../Core/services/cart.service';
 import { StripeService } from '../../Core/services/stripe.service';
 import { CheckoutReviewComponent } from "./checkout-review/checkout-review.component";
 import { SnackbarService } from '../../Core/services/snackbar.service';
+import { OrderToCreate, ShippingAddress } from '../../Shared/models/Order';
+import { OrderService } from '../../Core/services/order.service';
+import { firstValueFrom } from 'rxjs';
 
 export interface DeliveryMethod {
   shortName: string;
@@ -44,6 +47,7 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
 
   private cartService = inject(CartService);
   private stripeService = inject(StripeService);
+  private orderService = inject(OrderService);
   private SnackbarService = inject(SnackbarService);
   private router = inject(Router);
 
@@ -174,25 +178,66 @@ export class CheckoutComponent implements AfterViewInit, OnDestroy {
   }
 
   async ConfirmPayment(stepper: MatStepper) {
-    this.loading=true
+    this.loading = true
     try {
       if (this.confirmationToken) {
         const result = await this.stripeService.ConfirmPayment(this.confirmationToken);
-        if( result.error) {
+
+        if (result.paymentIntent?.status == 'succeeded') {
+          const order = await this.CreateOrderModel();
+          const orderResult = await firstValueFrom(this.orderService.CreateOrder(order));
+          if (orderResult) {
+            this.cartService.deleteCart()
+            this.cartService.selectedDeliveryMethod.set(null)
+            this.router.navigate(['/checkout/success']);
+          } else {
+            throw new Error('Failed to create order');
+          }
+        } else if (result.error) {
           throw new Error(result.error.message || 'Failed to confirm payment');
-        }else{
-          this.cartService.deleteCart()
-          this.cartService.selectedDeliveryMethod.set(null)
-          this.router.navigate(['/checkout/success']);
         }
+        else
+          throw new Error('Something went wrong with the payment confirmation');
+
       }
     } catch (error: any) {
       this.SnackbarService.error(error.message || 'Failed to confirm payment');
       stepper.previous();
-    }finally{
-      this.loading=false
+    } finally {
+      this.loading = false
     }
 
+  }
+
+  private async CreateOrderModel(): Promise<OrderToCreate> {
+    const cart = this.cartService.cart();
+    const addressData = await this.getAddressData();
+    const shippingAddress: ShippingAddress = {
+      name: addressData.name,
+      line1: addressData.address.line1,
+      line2: addressData.address.line2 || undefined,
+      city: addressData.address.city,
+      postalCode: addressData.address.postal_code,
+      state: addressData.address.state,
+      country: addressData.address.country
+    };
+    const card = this.confirmationToken?.payment_method_preview.card;
+
+    if (!cart?.id || !cart.deliveryMethodId || !card || !shippingAddress) {
+      throw new Error('Problem creating order');
+    }
+
+    return {
+      cartId: cart.id,
+      paymentSummary: {
+        last4: +card.last4,
+        brand: card.brand,
+        expMonth: card.exp_month,
+        expYear: card.exp_year
+      },
+      shippingAddress,
+      deliveryMethodId: cart.deliveryMethodId
+    }
   }
 
   private updatePaymentIntent() {

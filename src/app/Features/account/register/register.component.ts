@@ -47,7 +47,7 @@ function passwordMatchValidator(control: AbstractControl): ValidationErrors | nu
     MatCheckboxModule
   ]
 })
-export class RegisterComponent  {
+export class RegisterComponent {
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
@@ -67,13 +67,9 @@ export class RegisterComponent  {
   }, { validators: passwordMatchValidator });
 
   loading = this.accountService.loading;
-  googleLoaded = this.accountService.googleLoaded;
-  facebookLoaded = this.accountService.facebookLoaded;
   errorMessage = '';
   hidePassword = true;
   hideConfirmPassword = true;
-
-
 
   get firstName() {
     return this.registerForm.get('firstName');
@@ -127,54 +123,6 @@ export class RegisterComponent  {
         this.snackBar.error('Registration failed. Please try again later.')
         this.errorMessage = error?.error?.message || 'Registration failed. Please try again later.';
       }
-    });
-  }
-
-  googleSignIn(): void {
-    this.errorMessage = '';
-    
-    if (!this.googleLoaded()) {
-      this.errorMessage = 'Google SDK not loaded yet. Please try again.';
-      return;
-    }
-
-    this.accountService.triggerGoogleSignIn((response: any) => {
-      this.accountService.handleGoogleSignInResponse(response).subscribe({
-        next: (user) => {
-          if (user) {
-            this.router.navigateByUrl('/');
-          } else {
-            this.errorMessage = 'Google sign-in failed.';
-          }
-        },
-        error: () => {
-          this.errorMessage = 'Google sign-in error. Please try again later.';
-        }
-      });
-    });
-  }
-
-  facebookSignIn(): void {
-    this.errorMessage = '';
-    
-    if (!this.facebookLoaded()) {
-      this.errorMessage = 'Facebook SDK not loaded yet. Please try again.';
-      return;
-    }
-
-    this.accountService.triggerFacebookSignIn((response: any) => {
-      this.accountService.handleFacebookSignInResponse(response).subscribe({
-        next: (user) => {
-          if (user) {
-            this.router.navigateByUrl('/');
-          } else {
-            this.errorMessage = 'Facebook sign-in failed.';
-          }
-        },
-        error: () => {
-          this.errorMessage = 'Facebook sign-in error. Please try again later.';
-        }
-      });
     });
   }
 

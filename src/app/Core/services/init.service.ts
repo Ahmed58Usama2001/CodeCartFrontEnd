@@ -1,8 +1,7 @@
-// init.service.ts (updated)
 import { inject, Injectable } from '@angular/core';
 import { CartService } from './cart.service';
 import { AccountService } from './account.service';
-import { of, switchMap, tap } from 'rxjs';
+import { of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

@@ -32,7 +32,7 @@ import { LoginDto } from '../../../Shared/models/User';
     MatDividerModule
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
   private fb = inject(FormBuilder);
   private accountService = inject(AccountService);
   private router = inject(Router);
@@ -43,13 +43,7 @@ export class LoginComponent implements OnInit {
   });
 
   loading = this.accountService.loading;
-  googleLoaded = this.accountService.googleLoaded;
-  facebookLoaded = this.accountService.facebookLoaded;
   errorMessage = '';
-
-  ngOnInit() {
-    // External SDKs are automatically initialized by the AccountService
-  }
 
   get email() {
     return this.loginForm.get('email');
@@ -82,54 +76,6 @@ export class LoginComponent implements OnInit {
       error: () => {
         this.errorMessage = 'Login failed. Please try again later.';
       }
-    });
-  }
-
-  googleSignIn(): void {
-    this.errorMessage = '';
-    
-    if (!this.googleLoaded()) {
-      this.errorMessage = 'Google SDK not loaded yet. Please try again.';
-      return;
-    }
-
-    this.accountService.triggerGoogleSignIn((response: any) => {
-      this.accountService.handleGoogleSignInResponse(response).subscribe({
-        next: (user) => {
-          if (user) {
-            this.router.navigateByUrl('/');
-          } else {
-            this.errorMessage = 'Google sign-in failed.';
-          }
-        },
-        error: () => {
-          this.errorMessage = 'Google sign-in error. Please try again later.';
-        }
-      });
-    });
-  }
-
-  facebookSignIn(): void {
-    this.errorMessage = '';
-    
-    if (!this.facebookLoaded()) {
-      this.errorMessage = 'Facebook SDK not loaded yet. Please try again.';
-      return;
-    }
-
-    this.accountService.triggerFacebookSignIn((response: any) => {
-      this.accountService.handleFacebookSignInResponse(response).subscribe({
-        next: (user) => {
-          if (user) {
-            this.router.navigateByUrl('/');
-          } else {
-            this.errorMessage = 'Facebook sign-in failed.';
-          }
-        },
-        error: () => {
-          this.errorMessage = 'Facebook sign-in error. Please try again later.';
-        }
-      });
     });
   }
 

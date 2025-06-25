@@ -19,7 +19,6 @@ export const tokenInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      // If we get a 401 error, logout the user
       if (error.status === 401) {
         accountService.logout().subscribe();
       }

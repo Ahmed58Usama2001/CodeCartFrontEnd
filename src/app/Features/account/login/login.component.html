@@ -1,112 +1,99 @@
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-light">
-  <div class="row w-100 justify-content-center">
-    <div class="col-12 col-sm-8 col-md-6 col-lg-4 col-xl-3">
-      <mat-card class="login-card shadow-lg border-0" style="border-radius: 16px;">
-        <mat-card-header class="text-center pb-0">
-          <div class="w-100">
-            <div class="mb-3">
-              <mat-icon class="display-4 text-primary">account_circle</mat-icon>
-            </div>
-            <mat-card-title class="h3 fw-bold text-dark mb-2">Welcome Back</mat-card-title>
-            <mat-card-subtitle class="text-muted fs-6">Please login to continue</mat-card-subtitle>
+<div class="login-container">
+  <div class="login-wrapper">
+    <mat-card class="login-card">
+      <mat-card-header class="login-header">
+        <div class="logo-section">
+          <mat-icon class="logo-icon">lock</mat-icon>
+          <h1 class="login-title">Welcome Back</h1>
+          <p class="login-subtitle">Sign in to your account</p>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content class="login-content">
+        <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
+          <!-- Email Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email Address</mat-label>
+            <input 
+              matInput 
+              type="email" 
+              formControlName="email"
+              placeholder="Enter your email"
+              autocomplete="email">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="email?.invalid && email?.touched">
+              <span *ngIf="email?.errors?.['required']">Email is required</span>
+              <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Password Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input 
+              matInput 
+              [type]="hidePassword ? 'password' : 'text'" 
+              formControlName="password"
+              placeholder="Enter your password"
+              autocomplete="current-password">
+            <button 
+              mat-icon-button 
+              matSuffix 
+              type="button"
+              (click)="hidePassword = !hidePassword"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="password?.invalid && password?.touched">
+              <span *ngIf="password?.errors?.['required']">Password is required</span>
+              <span *ngIf="password?.errors?.['minlength']">Password must be at least 6 characters</span>
+            </mat-error>
+          </mat-form-field>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="error-message">
+            <mat-icon class="error-icon">error</mat-icon>
+            <span>{{ errorMessage }}</span>
           </div>
-        </mat-card-header>
 
-        <mat-card-content class="px-4 py-3">
-          <form [formGroup]="loginForm" (ngSubmit)="submit()" class="login-form">
-            <!-- Email Field -->
-            <div class="mb-4">
-              <mat-form-field appearance="outline" class="w-100 custom-form-field">
-                <mat-label class="fw-medium">Email Address</mat-label>
-                <input matInput id="email" type="email" formControlName="email" autocomplete="username"
-                  placeholder="Enter your email" />
-                <mat-icon matSuffix class="text-muted">email</mat-icon>
-                @if (email?.invalid && email?.touched) {
-                <mat-error>
-                  @if (email?.errors?.['required']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Email is required
-                  </span>
-                  }
-                  @if (email?.errors?.['email']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Please enter a valid email address
-                  </span>
-                  }
-                </mat-error>
-                }
-              </mat-form-field>
-            </div>
+          <!-- Login Button -->
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            class="login-button full-width"
+            [disabled]="loading()">
+            <mat-spinner 
+              *ngIf="loading()" 
+              diameter="20" 
+              class="button-spinner">
+            </mat-spinner>
+            <span *ngIf="!loading()">Sign In</span>
+            <span *ngIf="loading()">Signing In...</span>
+          </button>
 
-            <!-- Password Field -->
-            <div class="mb-4">
-              <mat-form-field appearance="outline" class="w-100 custom-form-field">
-                <mat-label class="fw-medium">Password</mat-label>
-                <input matInput id="password" type="password" formControlName="password" autocomplete="current-password"
-                  placeholder="Enter your password" />
-                <mat-icon matSuffix class="text-muted">lock</mat-icon>
-                @if (password?.invalid && password?.touched) {
-                <mat-error>
-                  @if (password?.errors?.['required']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Password is required
-                  </span>
-                  }
-                  @if (password?.errors?.['minlength']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Password must be at least 6 characters
-                  </span>
-                  }
-                </mat-error>
-                }
-              </mat-form-field>
-            </div>
+          <!-- Forgot Password Link -->
+          <div class="forgot-password">
+            <a href="#" class="forgot-link">Forgot your password?</a>
+          </div>
 
-            <!-- Error Message -->
-            @if (errorMessage) {
-            <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
-              <mat-icon class="me-2">warning</mat-icon>
-              <span>{{ errorMessage }}</span>
-            </div>
-            }
+          <mat-divider class="divider"></mat-divider>
 
-            <!-- Login Button -->
-            <div class="d-grid mb-4">
-              <button mat-raised-button color="primary" type="submit" class="py-3 fw-medium fs-6"
-                style="border-radius: 12px; height: 48px;" [disabled]="loading()">
-                @if (!loading()) {
-                <span class="d-flex align-items-center justify-content-center">
-                  <mat-icon class="me-2">login</mat-icon>
-                  Sign In
-                </span>
-                } @else {
-                <div class="d-flex align-items-center justify-content-center">
-                  <mat-spinner diameter="20" class="me-2"></mat-spinner>
-                  <span>Signing in...</span>
-                </div>
-                }
-              </button>
-            </div>
-          </form>
-
-
-
-
-          <mat-card>
-
-            <mat-card-footer class="text-center pt-3 pb-4">
-              <div class="d-flex flex-column gap-3">
-                <p class="mb-0">
-                  <span class="text-muted me-1">Don't have an account?</span>
-                  <a style="cursor: pointer;" (click)="navigateToRegister()"
-                    class="text-primary fw-medium text-decoration-none hover-underline">
-                    Sign up here
-                  </a>
-                </p>
-              </div>
-            </mat-card-footer>
-          </mat-card>
+          <!-- Register Section -->
+          <div class="register-section">
+            <p class="register-text">Don't have an account?</p>
+            <button 
+              mat-stroked-button 
+              color="accent" 
+              type="button"
+              class="register-button full-width"
+              (click)="navigateToRegister()">
+              Create Account
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

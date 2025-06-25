@@ -44,6 +44,7 @@ export class LoginComponent {
 
   loading = this.accountService.loading;
   errorMessage = '';
+  hidePassword = true;
 
   get email() {
     return this.loginForm.get('email');

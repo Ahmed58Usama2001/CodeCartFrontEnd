@@ -1,230 +1,177 @@
-<div class="container-fluid d-flex justify-content-center align-items-center min-vh-100 bg-light">
-  <div class="row w-100 justify-content-center">
-    <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-5">
-      <mat-card class="register-card shadow-lg border-0" style="border-radius: 16px;">
-        <mat-card-header class="text-center pb-0">
-          <div class="w-100">
-            <div class="mb-3">
-              <mat-icon class="display-4 text-primary">person_add</mat-icon>
-            </div>
-            <mat-card-title class="h3 fw-bold text-dark mb-2">Create Account</mat-card-title>
-            <mat-card-subtitle class="text-muted fs-6">Join us today and get started</mat-card-subtitle>
+<div class="register-container">
+  <div class="register-wrapper">
+    <mat-card class="register-card">
+      <mat-card-header class="register-header">
+        <div class="logo-section">
+          <mat-icon class="logo-icon">person_add</mat-icon>
+          <h1 class="register-title">Create Account</h1>
+          <p class="register-subtitle">Join us today and get started</p>
+        </div>
+      </mat-card-header>
+
+      <mat-card-content class="register-content">
+        <form [formGroup]="registerForm" (ngSubmit)="submit()" class="register-form">
+          <!-- Name Fields Row -->
+          <div class="name-row">
+            <!-- First Name Field -->
+            <mat-form-field appearance="outline" class="name-field">
+              <mat-label>First Name</mat-label>
+              <input 
+                matInput 
+                type="text" 
+                formControlName="firstName"
+                placeholder="Enter first name"
+                autocomplete="given-name">
+              <mat-icon matSuffix>person</mat-icon>
+              <mat-error *ngIf="firstName?.invalid && firstName?.touched">
+                <span *ngIf="firstName?.errors?.['required']">First name is required</span>
+                <span *ngIf="firstName?.errors?.['minlength']">First name must be at least 2 characters</span>
+              </mat-error>
+            </mat-form-field>
+
+            <!-- Last Name Field -->
+            <mat-form-field appearance="outline" class="name-field">
+              <mat-label>Last Name</mat-label>
+              <input 
+                matInput 
+                type="text" 
+                formControlName="lastName"
+                placeholder="Enter last name"
+                autocomplete="family-name">
+              <mat-icon matSuffix>person_outline</mat-icon>
+              <mat-error *ngIf="lastName?.invalid && lastName?.touched">
+                <span *ngIf="lastName?.errors?.['required']">Last name is required</span>
+                <span *ngIf="lastName?.errors?.['minlength']">Last name must be at least 2 characters</span>
+              </mat-error>
+            </mat-form-field>
           </div>
-        </mat-card-header>
 
-        <mat-card-content class="px-4 py-3">
-          <form [formGroup]="registerForm" (ngSubmit)="submit()" class="register-form">
-            <!-- Name Fields Row -->
-            <div class="row mb-4">
-              <div class="col-md-6 mb-3 mb-md-0">
-                <mat-form-field appearance="outline" class="w-100 custom-form-field">
-                  <mat-label class="fw-medium">First Name</mat-label>
-                  <input matInput id="firstName" type="text" formControlName="firstName" autocomplete="given-name"
-                    placeholder="Enter your first name" />
-                  <mat-icon matSuffix class="text-muted">person</mat-icon>
-                  @if (firstName?.invalid && firstName?.touched) {
-                  <mat-error>
-                    @if (firstName?.errors?.['required']) {
-                    <span class="d-flex align-items-center">
-                      <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                      First name is required
-                    </span>
-                    }
-                    @if (firstName?.errors?.['minlength']) {
-                    <span class="d-flex align-items-center">
-                      <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                      Must be at least 2 characters
-                    </span>
-                    }
-                  </mat-error>
-                  }
-                </mat-form-field>
-              </div>
+          <!-- Email Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email Address</mat-label>
+            <input 
+              matInput 
+              type="email" 
+              formControlName="email"
+              placeholder="Enter your email"
+              autocomplete="email">
+            <mat-icon matSuffix>email</mat-icon>
+            <mat-error *ngIf="email?.invalid && email?.touched">
+              <span *ngIf="email?.errors?.['required']">Email is required</span>
+              <span *ngIf="email?.errors?.['email']">Please enter a valid email</span>
+            </mat-error>
+          </mat-form-field>
 
-              <div class="col-md-6">
-                <mat-form-field appearance="outline" class="w-100 custom-form-field">
-                  <mat-label class="fw-medium">Last Name</mat-label>
-                  <input matInput id="lastName" type="text" formControlName="lastName" autocomplete="family-name"
-                    placeholder="Enter your last name" />
-                  <mat-icon matSuffix class="text-muted">person</mat-icon>
-                  @if (lastName?.invalid && lastName?.touched) {
-                  <mat-error>
-                    @if (lastName?.errors?.['required']) {
-                    <span class="d-flex align-items-center">
-                      <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                      Last name is required
-                    </span>
-                    }
-                    @if (lastName?.errors?.['minlength']) {
-                    <span class="d-flex align-items-center">
-                      <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                      Must be at least 2 characters
-                    </span>
-                    }
-                  </mat-error>
-                  }
-                </mat-form-field>
-              </div>
-            </div>
+          <!-- Password Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Password</mat-label>
+            <input 
+              matInput 
+              [type]="hidePassword ? 'password' : 'text'" 
+              formControlName="password"
+              placeholder="Create a strong password"
+              autocomplete="new-password">
+            <button 
+              mat-icon-button 
+              matSuffix 
+              type="button"
+              (click)="togglePasswordVisibility()"
+              [attr.aria-label]="'Hide password'"
+              [attr.aria-pressed]="hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="password?.invalid && password?.touched">
+              <span *ngIf="password?.errors?.['required']">Password is required</span>
+              <span *ngIf="password?.errors?.['minlength']">Password must be at least 8 characters</span>
+              <span *ngIf="password?.errors?.['pattern']">Password must contain uppercase, lowercase, number, and special character</span>
+            </mat-error>
+            <mat-hint *ngIf="!password?.invalid || !password?.touched" class="password-hint">
+              Password must contain: uppercase, lowercase, number, and special character
+            </mat-hint>
+          </mat-form-field>
 
-            <!-- Email Field -->
-            <div class="mb-4">
-              <mat-form-field appearance="outline" class="w-100 custom-form-field">
-                <mat-label class="fw-medium">Email Address</mat-label>
-                <input matInput id="email" type="email" formControlName="email" autocomplete="email"
-                  placeholder="Enter your email address" />
-                <mat-icon matSuffix class="text-muted">email</mat-icon>
-                @if (email?.invalid && email?.touched) {
-                <mat-error>
-                  @if (email?.errors?.['required']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Email is required
-                  </span>
-                  }
-                  @if (email?.errors?.['email']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Please enter a valid email address
-                  </span>
-                  }
-                </mat-error>
-                }
-              </mat-form-field>
-            </div>
+          <!-- Confirm Password Field -->
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Confirm Password</mat-label>
+            <input 
+              matInput 
+              [type]="hideConfirmPassword ? 'password' : 'text'" 
+              formControlName="confirmPassword"
+              placeholder="Confirm your password"
+              autocomplete="new-password">
+            <button 
+              mat-icon-button 
+              matSuffix 
+              type="button"
+              (click)="toggleConfirmPasswordVisibility()"
+              [attr.aria-label]="'Hide confirm password'"
+              [attr.aria-pressed]="hideConfirmPassword">
+              <mat-icon>{{hideConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+            <mat-error *ngIf="confirmPassword?.invalid && confirmPassword?.touched">
+              <span *ngIf="confirmPassword?.errors?.['required']">Please confirm your password</span>
+            </mat-error>
+            <mat-error *ngIf="registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched">
+              Passwords do not match
+            </mat-error>
+          </mat-form-field>
 
-            <!-- Password Field -->
-            <div class="mb-4">
-              <mat-form-field appearance="outline" class="w-100 custom-form-field">
-                <mat-label class="fw-medium">Password</mat-label>
-                <input matInput id="password" [type]="hidePassword ? 'password' : 'text'" formControlName="password"
-                  autocomplete="new-password" placeholder="Create a strong password" />
-                <button mat-icon-button matSuffix type="button" (click)="togglePasswordVisibility()"
-                  [attr.aria-label]="'Toggle password visibility'" [attr.aria-pressed]="!hidePassword"
-                  class="password-toggle-btn">
-                  <mat-icon class="text-muted">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                </button>
-                @if (password?.invalid && password?.touched) {
-                <mat-error>
-                  @if (password?.errors?.['required']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Password is required
-                  </span>
-                  }
-                  @if (password?.errors?.['minlength']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Password must be at least 8 characters
-                  </span>
-                  }
-                  @if (password?.errors?.['pattern']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Password must contain uppercase, lowercase, number & special character
-                  </span>
-                  }
-                </mat-error>
-                }
-              </mat-form-field>
-            </div>
+          <!-- Terms and Conditions Checkbox -->
+          <div class="terms-section">
+            <mat-checkbox 
+              formControlName="agreeToTerms"
+              class="terms-checkbox"
+              color="primary">
+              <span class="terms-text">
+                I agree to the 
+                <a href="#" class="terms-link">Terms of Service</a> 
+                and 
+                <a href="#" class="terms-link">Privacy Policy</a>
+              </span>
+            </mat-checkbox>
+            <mat-error *ngIf="agreeToTerms?.invalid && agreeToTerms?.touched" class="terms-error">
+              You must agree to the terms and conditions
+            </mat-error>
+          </div>
 
-            <!-- Confirm Password Field -->
-            <div class="mb-4">
-              <mat-form-field appearance="outline" class="w-100 custom-form-field">
-                <mat-label class="fw-medium">Confirm Password</mat-label>
-                <input matInput id="confirmPassword" [type]="hideConfirmPassword ? 'password' : 'text'"
-                  formControlName="confirmPassword" autocomplete="new-password" placeholder="Confirm your password" />
-                <button mat-icon-button matSuffix type="button" (click)="toggleConfirmPasswordVisibility()"
-                  [attr.aria-label]="'Toggle confirm password visibility'" [attr.aria-pressed]="!hideConfirmPassword"
-                  class="password-toggle-btn">
-                  <mat-icon class="text-muted">{{ hideConfirmPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
-                </button>
-                @if (confirmPassword?.invalid && confirmPassword?.touched) {
-                <mat-error>
-                  @if (confirmPassword?.errors?.['required']) {
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Please confirm your password
-                  </span>
-                  }
-                </mat-error>
-                }
-                @if (registerForm.errors?.['passwordMismatch'] && confirmPassword?.touched) {
-                <mat-error>
-                  <span class="d-flex align-items-center">
-                    <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                    Passwords do not match
-                  </span>
-                </mat-error>
-                }
-              </mat-form-field>
-            </div>
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="error-message">
+            <mat-icon class="error-icon">error</mat-icon>
+            <span>{{ errorMessage }}</span>
+          </div>
 
-            <!-- Terms and Conditions -->
-            <div class="mb-4">
-              <div class="d-flex align-items-start">
-                <mat-checkbox formControlName="agreeToTerms" color="primary" class="me-2 mt-1">
-                </mat-checkbox>
-                <div class="flex-grow-1">
-                  <label class="form-check-label small text-muted lh-sm">
-                    I agree to the
-                    <a href="/terms" target="_blank" class="text-primary fw-medium hover-underline">Terms of Service</a>
-                    and
-                    <a href="/privacy" target="_blank" class="text-primary fw-medium hover-underline">Privacy Policy</a>
-                  </label>
-                </div>
-              </div>
-              @if (agreeToTerms?.invalid && agreeToTerms?.touched) {
-              <div class="text-danger small mt-2 d-flex align-items-center">
-                <mat-icon class="me-1" style="font-size: 16px;">error</mat-icon>
-                You must agree to the terms and conditions
-              </div>
-              }
-            </div>
+          <!-- Register Button -->
+          <button 
+            mat-raised-button 
+            color="primary" 
+            type="submit"
+            class="register-button full-width"
+            [disabled]="loading()">
+            <mat-spinner 
+              *ngIf="loading()" 
+              diameter="20" 
+              class="button-spinner">
+            </mat-spinner>
+            <span *ngIf="!loading()">Create Account</span>
+            <span *ngIf="loading()">Creating Account...</span>
+          </button>
 
-            <!-- Error Message -->
-            @if (errorMessage) {
-            <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
-              <mat-icon class="me-2">warning</mat-icon>
-              <span>{{ errorMessage }}</span>
-            </div>
-            }
+          <mat-divider class="divider"></mat-divider>
 
-            <!-- Register Button -->
-            <div class="d-grid mb-4">
-              <button mat-raised-button color="primary" type="submit" class="py-3 fw-medium fs-6"
-                style="border-radius: 12px; height: 48px;" [disabled]="loading()">
-                @if (!loading()) {
-                <span class="d-flex align-items-center justify-content-center">
-                  <mat-icon class="me-2">person_add</mat-icon>
-                  Create Account
-                </span>
-                } @else {
-                <div class="d-flex align-items-center justify-content-center">
-                  <mat-spinner diameter="20" class="me-2"></mat-spinner>
-                  <span>Creating account...</span>
-                </div>
-                }
-              </button>
-            </div>
-          </form>
-
-
-
-
-        </mat-card-content>
-
-        <mat-card-footer class="text-center pt-3 pb-4">
-          <p class="mb-0">
-            <span class="text-muted me-1">Already have an account?</span>
-            <a style="cursor: pointer;" (click)="navigateToLogin()"
-              class="text-primary fw-medium text-decoration-none hover-underline">
-              Sign in here
-            </a>
-          </p>
-        </mat-card-footer>
-      </mat-card>
-    </div>
+          <!-- Login Section -->
+          <div class="login-section">
+            <p class="login-text">Already have an account?</p>
+            <button 
+              mat-stroked-button 
+              color="accent" 
+              type="button"
+              class="login-button full-width"
+              (click)="navigateToLogin()">
+              Sign In
+            </button>
+          </div>
+        </form>
+      </mat-card-content>
+    </mat-card>
   </div>
 </div>

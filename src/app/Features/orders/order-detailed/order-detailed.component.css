@@ -1,0 +1,207 @@
+/* Header Styles */
+.order-title {
+  color: #0D6EFD;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+/* Card Styles */
+mat-card {
+  border-top: 3px solid #0D6EFD;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  border-radius: 12px;
+}
+
+mat-card-title {
+  color: #0D6EFD;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Order Items Styles */
+.order-items-card {
+  min-height: 400px;
+}
+
+.order-item {
+  padding: 1rem 0;
+}
+
+.product-image {
+  width: 100%;
+  max-width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.product-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.price-info {
+  text-align: right;
+}
+
+.unit-price {
+  font-size: 0.875rem;
+  color: #6c757d;
+  display: block;
+}
+
+.total-price {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0D6EFD;
+  margin-top: 0.25rem;
+}
+
+/* Summary Card Styles */
+.summary-card {
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  font-size: 0.95rem;
+}
+
+.total-row {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0D6EFD;
+  border-top: 2px solid #0D6EFD;
+  margin-top: 0.5rem;
+  padding-top: 1rem;
+}
+
+/* Address Card Styles */
+.address-card mat-card-title {
+  font-size: 1rem;
+}
+
+.address-info {
+  line-height: 1.4;
+}
+
+.recipient-name {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.5rem;
+}
+
+.address-info p {
+  margin-bottom: 0.25rem;
+  color: #666;
+}
+
+/* Payment Card Styles */
+.payment-card mat-card-title {
+  font-size: 1rem;
+}
+
+.payment-info {
+  text-align: center;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(13, 110, 253, 0.1);
+}
+
+.card-brand {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0D6EFD;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+
+.card-number {
+  font-size: 1rem;
+  font-family: 'Courier New', monospace;
+  color: #333;
+  margin-bottom: 0.25rem;
+}
+
+.card-expiry {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+/* Status Chip Styles */
+mat-chip {
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+/* Error State Styles */
+.error-icon {
+  font-size: 4rem;
+  color: #dc3545;
+  width: 4rem;
+  height: 4rem;
+}
+
+/* Button Styles */
+.mat-mdc-raised-button {
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .order-title {
+    font-size: 1.5rem;
+  }
+  
+  .d-flex.justify-content-between {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 1rem;
+  }
+  
+  .d-flex.align-items-center.gap-3 {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .product-image {
+    max-width: 60px;
+    height: 60px;
+  }
+  
+  .price-info {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+  
+  .unit-price {
+    display: inline;
+    margin-right: 0.5rem;
+  }
+  
+  .total-price {
+    display: inline;
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .container {
+    padding: 0 1rem;
+  }
+  
+  mat-card {
+    margin: 0 -0.5rem 1rem -0.5rem;
+  }
+}

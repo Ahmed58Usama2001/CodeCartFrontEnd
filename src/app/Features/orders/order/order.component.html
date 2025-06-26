@@ -1,1 +1,74 @@
-<p>order works!</p>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>My Orders</mat-card-title>
+          <mat-card-subtitle>View and manage your order history</mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          @if (loading) {
+            <div class="d-flex justify-content-center p-4">
+              <mat-spinner></mat-spinner>
+            </div>
+          } @else if (orders.length === 0) {
+            <div class="text-center p-4">
+              <h5 class="text-muted">No orders found</h5>
+              <p class="text-muted">You haven't placed any orders yet.</p>
+            </div>
+          } @else {
+            <div class="table-responsive">
+              <mat-table [dataSource]="orders" class="w-100">
+                <ng-container matColumnDef="id">
+                  <mat-header-cell *matHeaderCellDef>Order ID</mat-header-cell>
+                  <mat-cell *matCellDef="let order">
+                    <strong>#{{ order.id }}</strong>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="orderDate">
+                  <mat-header-cell *matHeaderCellDef>Date</mat-header-cell>
+                  <mat-cell *matCellDef="let order">
+                    {{ order.orderDate | date:'MMM dd, yyyy' }}
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="total">
+                  <mat-header-cell *matHeaderCellDef>Total</mat-header-cell>
+                  <mat-cell *matCellDef="let order">
+                    <strong>{{ order.total | currency }}</strong>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="orderStatus">
+                  <mat-header-cell *matHeaderCellDef>Status</mat-header-cell>
+                  <mat-cell *matCellDef="let order">
+                    <mat-chip-set>
+                      <mat-chip [color]="getStatusColor(order.orderStatus)" selected>
+                        {{ order.orderStatus }}
+                      </mat-chip>
+                    </mat-chip-set>
+                  </mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="deliveryMethod">
+                  <mat-header-cell *matHeaderCellDef>Delivery</mat-header-cell>
+                  <mat-cell *matCellDef="let order">
+                    {{ order.deliveryMethod }}
+                  </mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row 
+                  *matRowDef="let order; columns: displayedColumns;" 
+                  [routerLink]="['/orders', order.id]"
+                  class="clickable-row">
+                </mat-row>
+              </mat-table>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

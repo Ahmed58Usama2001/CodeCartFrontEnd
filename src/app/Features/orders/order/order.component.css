@@ -1,0 +1,76 @@
+.clickable-row {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.clickable-row:hover {
+  background-color: rgba(13, 110, 253, 0.08);
+}
+
+.mat-mdc-table {
+  box-shadow: none;
+}
+
+.mat-mdc-header-cell {
+  font-weight: 600;
+  color: #0D6EFD;
+  background-color: rgba(13, 110, 253, 0.05);
+}
+
+.mat-mdc-cell {
+  padding: 16px 8px;
+}
+
+.mat-mdc-header-cell {
+  padding: 16px 8px;
+}
+
+mat-card {
+  margin-bottom: 2rem;
+  border-top: 4px solid #0D6EFD;
+}
+
+mat-card-header {
+  margin-bottom: 1rem;
+}
+
+mat-card-title {
+  color: #0D6EFD;
+  font-weight: 600;
+}
+
+mat-card-subtitle {
+  color: #6c757d;
+}
+
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+  border: 1px solid rgba(13, 110, 253, 0.1);
+}
+
+mat-chip {
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.mat-mdc-cell strong {
+  color: #0D6EFD;
+}
+
+.text-muted {
+  color: #6c757d !important;
+}
+
+@media (max-width: 768px) {
+  .mat-mdc-cell, .mat-mdc-header-cell {
+    padding: 12px 4px;
+    font-size: 14px;
+  }
+  
+  mat-chip {
+    font-size: 11px;
+  }
+}

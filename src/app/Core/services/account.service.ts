@@ -1,10 +1,11 @@
 import { Injectable, inject, signal, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment.development';
 import { AuthStateService } from './authstate.service';
+import { SignalrService } from './signalr.service';
 import { User, UserDto, RegisterDto, LoginDto, ForgetPasswordDto, ResetPasswordDto, Address } from '../../Shared/models/User';
 
 @Injectable({
@@ -14,6 +15,7 @@ export class AccountService {
   private baseUrl = environment.apiUrl + 'account';
 
   private authStateService = inject(AuthStateService);
+  private signalrService = inject(SignalrService);
 
   private currentUserSignal = signal<User | null>(null);
   private tokenSignal = signal<string | null>(null);
@@ -61,6 +63,8 @@ export class AccountService {
           if (response && response.token) {
             this.setCurrentUser(response);
             this.authStateService.handleUserRegistration(response.email).subscribe();
+            // Start SignalR connection after successful registration
+            this.startSignalRConnection(response.token);
             return response;
           }
           return null;
@@ -81,6 +85,8 @@ export class AccountService {
           if (response && response.token) {
             this.setCurrentUser(response);
             this.authStateService.handleUserLogin(response.email).subscribe();
+            // Start SignalR connection after successful login
+            this.startSignalRConnection(response.token);
             return response;
           }
           return null;
@@ -101,12 +107,16 @@ export class AccountService {
         map(() => {
           this.loadingSignal.set(false);
           this.authStateService.handleUserLogout(currentEmail).subscribe();
+          // Stop SignalR connection before clearing user data
+          this.stopSignalRConnection();
           this.clearUserData();
           return true;
         }),
         catchError(() => {
           this.loadingSignal.set(false);
           this.authStateService.handleUserLogout(currentEmail).subscribe();
+          // Stop SignalR connection even if logout API fails
+          this.stopSignalRConnection();
           this.clearUserData();
           return of(true);
         })
@@ -131,8 +141,6 @@ export class AccountService {
         })
       );
   }
-
-
 
   getUserAddress(): Observable<Address | null> {
     this.loadingSignal.set(true);
@@ -188,7 +196,23 @@ export class AccountService {
     this.tokenSignal.set(null);
   }
 
-  // Make this method public so InitService can call it
+  // SignalR connection management methods
+  private async startSignalRConnection(token: string): Promise<void> {
+    try {
+      await this.signalrService.createHubConnection(token);
+    } catch (error) {
+      console.error('Failed to start SignalR connection:', error);
+    }
+  }
+
+  private async stopSignalRConnection(): Promise<void> {
+    try {
+      await this.signalrService.stopHubConnection();
+    } catch (error) {
+      console.error('Failed to stop SignalR connection:', error);
+    }
+  }
+
   public loadUserFromStorage(): void {
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
@@ -198,6 +222,7 @@ export class AccountService {
         const user = JSON.parse(userStr);
         this.currentUserSignal.set(user);
         this.tokenSignal.set(token);
+        this.startSignalRConnection(token);
       } catch (error) {
         this.clearUserData();
       }

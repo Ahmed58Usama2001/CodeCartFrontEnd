@@ -1,1 +1,153 @@
-<p>home works!</p>
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <div class="container">
+      <div class="row justify-content-center text-center">
+        <div class="col-lg-8">
+          <h1 class="hero-title">Welcome to <span class="brand-highlight">CodeCart</span></h1>
+          <p class="hero-subtitle">Your premier destination for premium code solutions, templates, and digital assets</p>
+          <div class="hero-buttons">
+            <button mat-raised-button class="btn-white-custom" routerLink="/shop">
+              <mat-icon>shopping_cart</mat-icon>
+              Shop Now
+            </button>
+            <button mat-stroked-button class="btn-outline-custom">
+              <mat-icon>play_arrow</mat-icon>
+              Watch Demo
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="/public/images/cover.jpg" alt="CodeCart Hero" class="img-fluid">
+  </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section py-5">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-12">
+        <h2 class="section-title">Why Choose CodeCart?</h2>
+        <p class="section-subtitle">Discover what makes us the preferred choice for developers worldwide</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-3 col-md-6 mb-4" *ngFor="let feature of features">
+        <mat-card class="feature-card h-100">
+          <mat-card-content class="text-center">
+            <div class="feature-icon-wrapper">
+              <mat-icon class="feature-icon">{{feature.icon}}</mat-icon>
+            </div>
+            <h4 class="feature-title">{{feature.title}}</h4>
+            <p class="feature-description">{{feature.description}}</p>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="featured-products-section py-5">
+  <div class="container">
+    <div class="row text-center mb-5">
+      <div class="col-12">
+        <h2 class="section-title">Featured Products</h2>
+        <p class="section-subtitle">Explore our handpicked selection of premium code solutions</p>
+      </div>
+    </div>
+    
+    <div class="row" *ngIf="!loading && featuredProducts.length > 0">
+      <div class="col-lg-3 col-md-6 mb-4" *ngFor="let product of featuredProducts.slice(0, 8)">
+        <mat-card class="product-card h-100">
+          <div class="product-image-wrapper">
+            <img mat-card-image [src]="product.pictureUrl" [alt]="product.name" class="product-image">
+            <div class="product-overlay">
+              <button [routerLink]="['/shop', product.id]" mat-mini-fab class="overlay-btn">
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+          </div>
+          <mat-card-content>
+            <h5 class="product-title">{{product.name}}</h5>
+            <p class="product-brand">{{product.brand}}</p>
+            <div class="product-price">${{product.price}}</div>
+          </mat-card-content>
+          
+        </mat-card>
+      </div>
+    </div>
+    
+    <!-- Loading State -->
+    <div class="row justify-content-center" *ngIf="loading">
+      <div class="col-auto">
+        <div class="loading-spinner">
+          <mat-icon class="spinning">refresh</mat-icon>
+          <p>Loading products...</p>
+        </div>
+      </div>
+    </div>
+    
+    <!-- View All Products Button -->
+    <div class="row text-center mt-4">
+      <div class="col-12">
+        <button mat-raised-button class="btn-primary-custom btn-lg" routerLink="/shop">
+          View All Products
+          <mat-icon>arrow_forward</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section py-5">
+  <div class="container">
+    <div class="row text-center">
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-item">
+          <h3 class="stat-number">10K+</h3>
+          <p class="stat-label">Happy Customers</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-item">
+          <h3 class="stat-number">500+</h3>
+          <p class="stat-label">Premium Products</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-item">
+          <h3 class="stat-number">24/7</h3>
+          <p class="stat-label">Support Available</p>
+        </div>
+      </div>
+      <div class="col-lg-3 col-md-6 mb-4">
+        <div class="stat-item">
+          <h3 class="stat-number">99%</h3>
+          <p class="stat-label">Satisfaction Rate</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5">
+  <div class="container">
+    <div class="row justify-content-center text-center">
+      <div class="col-lg-8">
+        <h2 class="cta-title">Ready to Start Your Journey?</h2>
+        <p class="cta-subtitle">Join thousands of developers who trust CodeCart for their coding needs</p>
+        <button mat-raised-button class="btn-primary-custom btn-lg" routerLink="/shop">
+          <mat-icon>rocket_launch</mat-icon>
+          Get Started Today
+        </button>
+      </div>
+    </div>
+  </div>
+</section>

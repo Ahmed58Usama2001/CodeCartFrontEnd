@@ -13,6 +13,7 @@ import { authGuard } from './Core/guards/auth.guard';
 import { CheckoutSuccessComponent } from './Features/checkout/checkout-success/checkout-success.component';
 import { OrderComponent } from './Features/orders/order/order.component';
 import { OrderDetailedComponent } from './Features/orders/order-detailed/order-detailed.component';
+import { orderCompleteGuard } from './Core/guards/order-complete.guard';
 
 export const routes: Routes = [
     {path: '', component: HomeComponent},
@@ -25,7 +26,7 @@ export const routes: Routes = [
     {path: 'orders', component: OrderComponent,canActivate: [authGuard]},
     {path: 'orders/:id', component: OrderDetailedComponent,canActivate: [authGuard]},
     {path: 'checkout', component: CheckoutComponent,canActivate: [authGuard]},
-    {path: 'checkout/success', component: CheckoutSuccessComponent,canActivate: [authGuard]},
+    {path: 'checkout/success', component: CheckoutSuccessComponent,canActivate: [authGuard,orderCompleteGuard]},
     {path: 'account/login', component: LoginComponent},
     {path: 'account/register', component: RegisterComponent},
     {path: '**',redirectTo:'not-found' ,pathMatch:'full'}

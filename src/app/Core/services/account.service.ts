@@ -199,6 +199,11 @@ export class AccountService {
   // SignalR connection management methods
   private async startSignalRConnection(token: string): Promise<void> {
     try {
+      if (!token) {
+        console.error('Cannot start SignalR connection: No token provided');
+        return;
+      }
+      console.log('Starting SignalR connection with token...');
       await this.signalrService.createHubConnection(token);
     } catch (error) {
       console.error('Failed to start SignalR connection:', error);
@@ -213,6 +218,7 @@ export class AccountService {
     }
   }
 
+  // Make this method public so InitService can call it
   public loadUserFromStorage(): void {
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
@@ -222,6 +228,7 @@ export class AccountService {
         const user = JSON.parse(userStr);
         this.currentUserSignal.set(user);
         this.tokenSignal.set(token);
+        // Start SignalR connection for user loaded from storage
         this.startSignalRConnection(token);
       } catch (error) {
         this.clearUserData();

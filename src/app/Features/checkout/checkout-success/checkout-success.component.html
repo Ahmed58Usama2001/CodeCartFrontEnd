@@ -1,1 +1,143 @@
-<p>checkout-success works!</p>
+<!-- Loading State -->
+<div *ngIf="!signalrService.orderSignal()" class="loading-container">
+  <div class="loading-content">
+    <mat-spinner diameter="60" color="primary"></mat-spinner>
+    <h3 class="loading-title">Processing your order...</h3>
+    <p class="loading-subtitle">Please wait while we confirm your payment</p>
+  </div>
+</div>
+
+<!-- Success State -->
+<div *ngIf="signalrService.orderSignal()" class="success-container">
+  <!-- Success Header -->
+  <div class="success-header">
+ 
+    <h1 class="success-title">Order Confirmed! <mat-icon>celebration</mat-icon></h1>
+    <p class="success-subtitle">Thank you for your purchase. Your order has been successfully placed.</p>
+  </div>
+
+  <!-- Order Summary Card -->
+  <div class="order-summary-card">
+    <div class="card-header">
+      <h2 class="card-title">Order Summary</h2>
+      <span class="order-status" [ngClass]="'status-' + signalrService.orderSignal()?.orderStatus?.toLowerCase()">
+        {{ signalrService.orderSignal()?.orderStatus }}
+      </span>
+    </div>
+
+    <div class="order-details">
+      <div class="detail-row">
+        <span class="detail-label">Order ID:</span>
+        <span class="detail-value">#{{ signalrService.orderSignal()?.id }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Order Date:</span>
+        <span class="detail-value">{{ signalrService.orderSignal()?.orderDate | date:'medium' }}</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Email:</span>
+        <span class="detail-value">{{ signalrService.orderSignal()?.buyerEmail }}</span>
+      </div>
+    </div>
+
+    <!-- Shipping Information -->
+    <div class="section-divider"></div>
+    <div class="shipping-section">
+      <h3 class="section-title">
+        <mat-icon>local_shipping</mat-icon>
+        Shipping Information
+      </h3>
+      <div class="shipping-details">
+        <div class="shipping-address">
+          <p class="address">{{ signalrService.orderSignal()?.shippingAddress | address }}</p>
+        </div>
+        <div class="delivery-info">
+          <div class="delivery-method">
+            <span class="delivery-label">Delivery Method:</span>
+            <span class="delivery-value">{{ signalrService.orderSignal()?.deliveryMethod }}</span>
+          </div>
+          <div class="shipping-cost">
+            <span class="shipping-label">Shipping Cost:</span>
+            <span class="shipping-value">{{ signalrService.orderSignal()?.shippingPrice | currency }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Order Items -->
+    <div class="section-divider"></div>
+    <div class="items-section">
+      <h3 class="section-title">
+        <mat-icon>shopping_cart</mat-icon>
+        Order Items
+      </h3>
+      <div class="items-list">
+        <div *ngFor="let item of signalrService.orderSignal()?.orderItems" class="item-row">
+          <div class="item-image">
+            <img [src]="item.pictureUrl" [alt]="item.productName" />
+          </div>
+          <div class="item-details">
+            <h4 class="item-name">{{ item.productName }}</h4>
+            <p class="item-quantity">Quantity: {{ item.quantity }}</p>
+          </div>
+          <div class="item-price">
+            <span class="price">{{ item.price | currency }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Payment Summary -->
+    <div class="section-divider"></div>
+    <div class="payment-section">
+      <h3 class="section-title">
+        <mat-icon>payment</mat-icon>
+        Payment Summary
+      </h3>
+      <div class="payment-details">
+        <div class="payment-row">
+          <span class="payment-label">Subtotal:</span>
+          <span class="payment-value">{{ signalrService.orderSignal()?.subtotal | currency }}</span>
+        </div>
+        <div class="payment-row">
+          <span class="payment-label">Shipping:</span>
+          <span class="payment-value">{{ signalrService.orderSignal()?.shippingPrice | currency }}</span>
+        </div>
+        <div class="payment-row total-row">
+          <span class="payment-label">Total:</span>
+          <span class="payment-value total-amount">{{ signalrService.orderSignal()?.total | currency }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button mat-raised-button color="primary" routerLink="/shop" class="continue-shopping-btn">
+      <mat-icon>shopping_bag</mat-icon>
+      Continue Shopping
+    </button>
+    <button mat-stroked-button routerLink="/orders" class="view-orders-btn">
+      <mat-icon>receipt_long</mat-icon>
+      View All Orders
+    </button>
+  </div>
+
+  <!-- Additional Information -->
+  <div class="additional-info">
+    <div class="info-card">
+      <mat-icon class="info-icon">email</mat-icon>
+      <div class="info-content">
+        <h4>Confirmation Email</h4>
+        <p>A confirmation email has been sent to {{ signalrService.orderSignal()?.buyerEmail }}</p>
+      </div>
+    </div>
+    <div class="info-card">
+      <mat-icon class="info-icon">support</mat-icon>
+      <div class="info-content">
+        <h4>Need Help?</h4>
+        <p>Contact our support team if you have any questions about your order.</p>
+      </div>
+    </div>
+  </div>
+</div>

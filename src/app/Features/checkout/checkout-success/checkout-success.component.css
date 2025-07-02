@@ -1,0 +1,529 @@
+/* Container Styles */
+.loading-container,
+.success-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  min-height: 70vh;
+}
+
+/* Loading State Styles */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-content {
+  text-align: center;
+  padding: 40px;
+}
+
+.loading-title {
+  margin: 20px 0 10px 0;
+  color: #0D6EFD;
+  font-weight: 600;
+  font-size: 1.5rem;
+}
+
+.loading-subtitle {
+  color: #6c757d;
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Success Header Styles */
+.success-header {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 30px 20px;
+  background: linear-gradient(135deg, #0D6EFD 0%, #0B5ED7 100%);
+  border-radius: 12px;
+  color: white;
+  box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
+}
+
+.success-icon {
+  margin-bottom: 20px;
+}
+
+.check-icon {
+  font-size: 4rem !important;
+  width: 4rem !important;
+  height: 4rem !important;
+  color: #28a745;
+  background: white;
+  border-radius: 50%;
+  padding: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.success-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.success-subtitle {
+  font-size: 1.1rem;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* Order Summary Card */
+.order-summary-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  overflow: hidden;
+  border: 1px solid #e9ecef;
+}
+
+.card-header {
+  background: #f8f9fa;
+  padding: 20px 25px;
+  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0;
+}
+
+.order-status {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-confirmed,
+.status-completed {
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.status-pending {
+  background: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeaa7;
+}
+
+.status-processing {
+  background: #cce7ff;
+  color: #004085;
+  border: 1px solid #b3d9ff;
+}
+
+/* Order Details */
+.order-details {
+  padding: 25px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-label {
+  font-weight: 600;
+  color: #495057;
+  font-size: 0.95rem;
+}
+
+.detail-value {
+  color: #212529;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Section Styles */
+.section-divider {
+  height: 1px;
+  background: #e9ecef;
+  margin: 0 25px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #0D6EFD;
+  margin: 0 0 20px 0;
+}
+
+.section-title mat-icon {
+  font-size: 1.3rem;
+  width: 1.3rem;
+  height: 1.3rem;
+}
+
+/* Shipping Section */
+.shipping-section {
+  padding: 25px;
+}
+
+.shipping-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.shipping-address .address {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 0;
+  border-left: 4px solid #0D6EFD;
+  line-height: 1.6;
+}
+
+.delivery-info {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.delivery-method,
+.shipping-cost {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+}
+
+.delivery-label,
+.shipping-label {
+  font-weight: 600;
+  color: #495057;
+}
+
+.delivery-value,
+.shipping-value {
+  color: #212529;
+  font-weight: 500;
+}
+
+/* Items Section */
+.items-section {
+  padding: 25px;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.item-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.item-image {
+  flex-shrink: 0;
+}
+
+.item-image img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.item-details {
+  flex-grow: 1;
+}
+
+.item-name {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 5px 0;
+}
+
+.item-quantity {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin: 0;
+}
+
+.item-price {
+  flex-shrink: 0;
+}
+
+.item-price .price {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #0D6EFD;
+}
+
+/* Payment Section */
+.payment-section {
+  padding: 25px;
+}
+
+.payment-details {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.payment-row:last-child {
+  border-bottom: none;
+}
+
+.payment-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.payment-value {
+  font-weight: 600;
+  color: #212529;
+}
+
+.total-row {
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 2px solid #0D6EFD;
+  font-size: 1.1rem;
+}
+
+.total-amount {
+  color: #0D6EFD;
+  font-size: 1.3rem;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.continue-shopping-btn,
+.view-orders-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: none;
+  font-size: 0.95rem;
+}
+
+.continue-shopping-btn {
+  background: #0D6EFD;
+  color: white;
+  min-width: 180px;
+}
+
+.continue-shopping-btn:hover {
+  background: #0B5ED7;
+}
+
+.view-orders-btn {
+  border: 2px solid #0D6EFD;
+  color: #0D6EFD;
+  min-width: 160px;
+}
+
+.view-orders-btn:hover {
+  background: #0D6EFD;
+  color: white;
+}
+
+/* Additional Information */
+.additional-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.info-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.info-icon {
+  color: #0D6EFD;
+  font-size: 1.5rem !important;
+  width: 1.5rem !important;
+  height: 1.5rem !important;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.info-content h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #212529;
+  margin: 0 0 5px 0;
+}
+
+.info-content p {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .loading-container,
+  .success-container {
+    padding: 15px;
+  }
+
+  .success-title {
+    font-size: 2rem;
+  }
+
+  .success-subtitle {
+    font-size: 1rem;
+  }
+
+  .shipping-details {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .item-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .item-image img {
+    width: 80px;
+    height: 80px;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .continue-shopping-btn,
+  .view-orders-btn {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .additional-info {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .card-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .detail-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+}
+
+@media (max-width: 480px) {
+  .order-summary-card,
+  .shipping-section,
+  .items-section,
+  .payment-section {
+    padding: 20px 15px;
+  }
+
+  .success-header {
+    padding: 25px 15px;
+  }
+
+  .success-title {
+    font-size: 1.75rem;
+  }
+
+  .check-icon {
+    font-size: 3rem !important;
+    width: 3rem !important;
+    height: 3rem !important;
+  }
+}
+
+/* Animation for smooth loading */
+.success-container {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Material Design Enhancement */
+.mat-mdc-raised-button.continue-shopping-btn {
+  --mdc-protected-button-container-color: #0D6EFD;
+  --mdc-protected-button-label-text-color: white;
+}
+
+.mat-mdc-outlined-button.view-orders-btn {
+  --mdc-outlined-button-outline-color: #0D6EFD;
+  --mdc-outlined-button-label-text-color: #0D6EFD;
+}
+
+/* Loading spinner color override */
+::ng-deep .mat-mdc-progress-spinner circle {
+  stroke: #0D6EFD;
+}

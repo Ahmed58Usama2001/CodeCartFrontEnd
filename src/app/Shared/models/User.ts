@@ -1,17 +1,18 @@
 export interface User {
-    firstName: string;
-    lastName: string;
-    email: string;
-    address:Address
+  firstName: string;
+  lastName: string;
+  email: string;
+  address: Address;
+  roles: string | string[];
 }
 
 export interface Address {
-    line1: string;
-    line2?: string;
-    city: string;
-    state: string;
-    country: string;
-    postalCode: string;
+  line1: string;
+  line2?: string;
+  city: string;
+  state: string;
+  country: string;
+  postalCode: string;
 }
 
 export interface RegisterDto {
@@ -32,6 +33,8 @@ export interface UserDto {
   token: string;
   refreshToken: string;
   address?: Address;
+  roles: string | string[];
+
 }
 
 export interface GoogleSignInVM {

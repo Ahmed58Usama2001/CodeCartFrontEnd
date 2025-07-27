@@ -11,6 +11,7 @@ import { AccountService } from '../../Core/services/account.service';
 import { InitService } from '../../Core/services/init.service';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatMenuModule } from '@angular/material/menu';
+import { IsAdminDirective } from '../../Shared/directives/is-admin.directive';
 
 @Component({
   selector: 'app-header',
@@ -26,6 +27,7 @@ import { MatMenuModule } from '@angular/material/menu';
     MatButtonModule,
     MatIconModule,
     MatDividerModule,
+    IsAdminDirective
   ],
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.css']

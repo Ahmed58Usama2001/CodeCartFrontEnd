@@ -38,6 +38,19 @@ export class AccountService {
     if (!user) return '';
     return `${user.firstName?.[0] || ''}${user.lastName?.[0] || ''}`.toUpperCase();
   });
+  public readonly isAdmin = computed(() => {
+    const user = this.currentUser();
+    if (!user || !user.roles) return false;
+    
+    // Handle both string and string[] cases
+    if (typeof user.roles === 'string') {
+      return user.roles === 'Admin';
+    } else if (Array.isArray(user.roles)) {
+      return user.roles.includes('Admin');
+    }
+    
+    return false;
+  });
 
   constructor(private http: HttpClient) {
     effect(() => {
@@ -185,6 +198,7 @@ export class AccountService {
       lastName: userDto.userName.split(' ')[1] || '',
       email: userDto.email,
       address: userDto.address || {} as Address,
+      roles: userDto.roles || []
     };
 
     this.currentUserSignal.set(user);

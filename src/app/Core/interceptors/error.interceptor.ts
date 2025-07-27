@@ -30,6 +30,10 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
         snackbar.error(err.error.title || err.error);
       }
 
+      if (err.status === 403) {
+        snackbar.error('You are not authorized to access this resource.');
+      }
+
       if (err.status === 404) {
         router.navigateByUrl('/not-found');
       }

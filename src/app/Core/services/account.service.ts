@@ -40,6 +40,8 @@ export class AccountService {
   });
   public readonly isAdmin = computed(() => {
     const user = this.currentUser();
+    console.log('Checking if user is admin:', user);
+    
     if (!user || !user.roles) return false;
     
     // Handle both string and string[] cases

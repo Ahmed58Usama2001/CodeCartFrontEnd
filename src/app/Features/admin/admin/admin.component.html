@@ -1,1 +1,122 @@
-<p>admin works!</p>
+<div class="container-fluid p-4">
+  <mat-card class="orders-card">
+    <mat-card-header class="mb-4">
+      <mat-card-title class="h3 mb-0">Orders Management</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="row mb-4">
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Filter by Status</mat-label>
+            <mat-select [(value)]="orderParams.filter" (selectionChange)="onStatusChange($event)">
+              <mat-option *ngFor="let status of statusOptions" [value]="status.value">
+                {{ status.label }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div *ngIf="loading" class="text-center py-4">
+        <mat-spinner diameter="50"></mat-spinner>
+      </div>
+
+      <div *ngIf="!loading" class="table-container">
+        <table mat-table [dataSource]="dataSource" class="w-100 orders-table">
+          
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef class="fw-bold">ID</th>
+            <td mat-cell *matCellDef="let order">#{{ order.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="buyerEmail">
+            <th mat-header-cell *matHeaderCellDef class="fw-bold">Buyer Email</th>
+            <td mat-cell *matCellDef="let order">
+              <div class="email-cell">
+                <mat-icon class="me-2 text-muted">email</mat-icon>
+                {{ order.buyerEmail }}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="orderDate">
+            <th mat-header-cell *matHeaderCellDef class="fw-bold">Order Date</th>
+            <td mat-cell *matCellDef="let order">
+              <div class="date-cell">
+                <mat-icon class="me-2 text-muted">event</mat-icon>
+                {{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}
+              </div>
+            </td>
+          </ng-container>
+
+           <ng-container matColumnDef="total">
+            <th mat-header-cell *matHeaderCellDef class="fw-bold">Total</th>
+            <td mat-cell *matCellDef="let order">
+              <div class="email-cell">
+                <mat-icon class="me-2 text-muted">money</mat-icon>
+                {{ order.total | currency:'USD':'symbol':'1.2-2' }}
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef class="fw-bold">Status</th>
+            <td mat-cell *matCellDef="let order">
+              <span class="status-badge" [ngClass]="getStatusClass(order.orderStatus)">
+                {{ order.orderStatus }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef class="fw-bold">Actions</th>
+            <td mat-cell *matCellDef="let order">
+              <div class="action-buttons">
+                <button 
+                  mat-icon-button 
+                  color="primary" 
+                  (click)="viewOrder(order.id)"
+                  matTooltip="View Order Details"
+                  class="me-2">
+                  <mat-icon>visibility</mat-icon>
+                </button>
+                
+                <button 
+                  mat-icon-button 
+                  color="warn" 
+                  [disabled]="order.orderStatus === 'Refunded'"
+                  (click)="refundOrder(order.id)"
+                  matTooltip="Refund Order"
+                  [disabled]="order.orderStatus === 'Refunded'">
+                  <mat-icon>undo</mat-icon>
+                </button>
+              </div>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="order-row"></tr>
+        </table>
+
+        <div *ngIf="dataSource.data.length === 0" class="text-center py-5">
+          <mat-icon class="no-data-icon mb-3">inbox</mat-icon>
+          <h5 class="text-muted">No orders found</h5>
+          <p class="text-muted">Try adjusting your filter criteria</p>
+        </div>
+      </div>
+
+      <mat-paginator 
+        *ngIf="dataSource && !loading"
+        #paginator
+        [length]="dataSource.data.length"
+        [pageSize]="orderParams.pageSize"
+        [pageIndex]="orderParams.pageIndex - 1"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="onPageChange($event)"
+        showFirstLastButtons
+        class="mt-4">
+      </mat-paginator>
+    </mat-card-content>
+  </mat-card>
+</div>

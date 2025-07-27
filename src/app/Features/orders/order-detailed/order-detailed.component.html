@@ -18,9 +18,9 @@
                 {{ order.orderStatus }}
               </mat-chip>
             </mat-chip-set>
-            <button mat-raised-button color="primary" (click)="goBack()">
+            <button mat-raised-button color="primary" (click)="onReturnClick()">
               <mat-icon>arrow_back</mat-icon>
-              Back to Orders
+              {{buttonText}}
             </button>
           </div>
         </div>
@@ -127,7 +127,7 @@
       <mat-icon class="error-icon">error_outline</mat-icon>
       <h4 class="mt-3">Order Not Found</h4>
       <p class="text-muted">The order you're looking for doesn't exist or you don't have permission to view it.</p>
-      <button mat-raised-button color="primary" (click)="goBack()">
+      <button mat-raised-button color="primary" (click)="onReturnClick()">
         Back to Orders
       </button>
     </div>

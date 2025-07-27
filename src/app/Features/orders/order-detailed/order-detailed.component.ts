@@ -10,6 +10,8 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDividerModule } from '@angular/material/divider';
+import { AccountService } from '../../../Core/services/account.service';
+import { AdminService } from '../../../Core/services/admin.service';
 
 @Component({
   selector: 'app-order-detailed',
@@ -32,12 +34,23 @@ export class OrderDetailedComponent implements OnInit {
   private snackBarService = inject(SnackbarService);
   private activatedRoute = inject(ActivatedRoute);
   private router = inject(Router);
+  private accountService = inject(AccountService);
+  private adminService = inject(AdminService);
 
+  buttonText = this.accountService.isAdmin()? 'Go to Admin Panel' : 'return to Orders';
   order?: Order;
   loading = true;
 
   ngOnInit(): void {
     this.loadOrder();
+  }
+
+  onReturnClick(){
+    if (this.accountService.isAdmin()) {
+      this.router.navigate(['/admin']);
+    } else {
+      this.router.navigate(['/orders']);
+    }
   }
 
   loadOrder() {
@@ -48,7 +61,10 @@ export class OrderDetailedComponent implements OnInit {
       return;
     }
 
-    this.orderService.GetOrderDetailed(+id).subscribe({
+    const loadOrderData = this.accountService.isAdmin()?this.adminService.getOrder(+id)
+    :this.orderService.GetOrderDetailed(+id);
+
+    loadOrderData.subscribe({
       next: (order) => {
         this.order = order;
         this.loading = false;
@@ -73,7 +89,5 @@ export class OrderDetailedComponent implements OnInit {
     }
   }
 
-  goBack() {
-    this.router.navigate(['/orders']);
-  }
+
 }

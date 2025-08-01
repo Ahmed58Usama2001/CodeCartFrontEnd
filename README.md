@@ -2,6 +2,9 @@
 
 A modern, responsive e-commerce frontend application built with Angular, featuring elegant UI components and real-time functionality.
 
+# Demo
+https://youtu.be/Z1qD_A-f-kA?si=9xqBoD5YKjG02Bq1
+
 ## 🚀 Features
 
 - **Product Showcase**: Elegant product display with advanced filtering and sorting

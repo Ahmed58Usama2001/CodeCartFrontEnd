@@ -1,59 +1,142 @@
-# CodeCartFrontEnd
+# CodeCart Frontend
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.4.
+A modern, responsive e-commerce frontend application built with Angular, featuring elegant UI components and real-time functionality.
 
-## Development server
+## 🚀 Features
 
-To start a local development server, run:
+- **Product Showcase**: Elegant product display with advanced filtering and sorting
+- **Smart Search**: Real-time product search by name
+- **Shopping Cart**: Interactive cart with real-time updates
+- **Secure Checkout**: Stripe integration with address and payment management
+- **Order Management**: Complete order history and detailed order tracking
+- **Real-time Updates**: SignalR integration for live payment status updates
+- **Admin Panel**: Administrative interface for order management and refunds
+- **Authentication**: Secure user registration, login, and session management
+- **Responsive Design**: Mobile-first approach with Bootstrap and Angular Material
 
-```bash
-ng serve
+## 🛠️ Technology Stack
+
+- **Angular** - Frontend framework
+- **TypeScript** - Type-safe JavaScript
+- **Angular Material** - UI component library
+- **Bootstrap** - CSS framework
+- **SignalR** - Real-time communication
+- **RxJS** - Reactive programming
+- **Azure Blue Theme** - Custom Material Design theme
+
+## 🏗️ Project Structure
+
+```
+src/
+├── app/
+│   ├── Core/
+│   │   ├── interceptors/     # HTTP interceptors
+│   │   └── services/         # Core services
+│   ├── Features/
+│   │   ├── account/          # Authentication features
+│   │   ├── admin/            # Admin panel
+│   │   ├── cart/             # Shopping cart
+│   │   ├── checkout/         # Checkout process
+│   │   ├── home/             # Home page
+│   │   ├── orders/           # Order management
+│   │   ├── shop/             # Product showcase
+│   │   └── test-error/       # Error testing
+│   ├── Layout/               # Layout components
+│   ├── Shared/
+│   │   ├── components/       # Reusable components
+│   │   ├── directives/       # Custom directives
+│   │   ├── models/           # TypeScript interfaces
+│   │   └── pipes/            # Custom pipes
+│   └── environments/         # Environment configurations
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🎨 Design Features
 
-## Code scaffolding
+- **Azure Blue Theme** - Custom Material Design theme
+- **Responsive Layout** - Mobile-first design approach
+- **Interactive Components** - Smooth animations and transitions
+- **Intuitive Navigation** - User-friendly interface design
+- **Loading States** - Visual feedback for async operations
+- **Error Handling** - Elegant error display and recovery
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## 🔧 Core Features
 
-```bash
-ng generate component component-name
-```
+### Product Management
+- Advanced filtering by brands and categories
+- Multiple sorting options (alphabetical, price)
+- Real-time search functionality
+- Detailed product views with image galleries
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Shopping Cart
+- Anonymous cart support
+- Persistent cart after user registration
+- Real-time quantity updates
+- Cart persistence across sessions
 
-```bash
-ng generate --help
-```
+### Checkout Process
+- Multi-step checkout flow
+- Address management
+- Stripe payment integration
+- Order confirmation and tracking
 
-## Building
+### Authentication & Security
+- JWT token management
+- Route guards for protected areas
+- Role-based access control
+- Secure session handling
 
-To build the project run:
+## 🛡️ Security & Guards
 
-```bash
-ng build
-```
+### Route Guards
+- **AuthGuard** - Protects authenticated routes
+- **AdminGuard** - Restricts admin-only areas
+- **OrderCompleteGuard** - Secures order completion flow
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Interceptors
+- **TokenInterceptor** - Automatic token attachment
+- **ErrorInterceptor** - Global error handling
+- **LoadingInterceptor** - Loading state management
 
-## Running unit tests
+## 🔄 Real-time Features
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+SignalR integration for:
+- Live payment status updates
+- Real-time order notifications
+- Dynamic cart synchronization
 
-```bash
-ng test
-```
+## 📱 Custom Components
 
-## Running end-to-end tests
+### Pipes
+- **AddressPipe** - Format shipping addresses
+- **PaymentPipe** - Extract payment details from Stripe tokens
 
-For end-to-end (e2e) testing, run:
+### Services
+- **CartService** - Cart state management
+- **OrderService** - Order processing
+- **AccountService** - User authentication
+- **AdminService** - Administrative functions
 
-```bash
-ng e2e
-```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 🔄 State Management
 
-## Additional Resources
+- **Services** - Singleton services for state management
+- **BehaviorSubjects** - Reactive state updates
+- **Local Storage** - Persistent cart and user preferences
+- **Session Management** - Secure token storage
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## 📱 Responsive Design
+
+- **Mobile First** - Optimized for mobile devices
+- **Breakpoint System** - Bootstrap responsive grid
+- **Touch Friendly** - Mobile-optimized interactions
+- **Progressive Web App** - PWA-ready architecture
+
+## 🎨 Theming
+
+Custom Azure Blue theme with:
+- Primary: Azure Blue palette
+- Typography: Material Design typography
+- Custom CSS variables for consistent styling
+- Angular Material team for beautiful components
+- Bootstrap team for responsive utilities
+- SignalR team for real-time capabilities
